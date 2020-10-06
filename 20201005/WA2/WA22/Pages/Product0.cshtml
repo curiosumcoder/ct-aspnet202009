@@ -1,0 +1,14 @@
+﻿@page
+@model WA22.Pages.ProductModel0
+@{
+}
+
+<h1>Products</h1>
+
+<ul>
+    @*@foreach (var i in Enumerable.Range(1, 10))*@
+    @foreach (var i in Model.Nums)
+    {
+        <li>@i</li>
+    }
+</ul>

@@ -1,0 +1,17 @@
+﻿@page
+@model WA22.Pages.ProductModel
+@{
+}
+
+<table>
+    <tbody>
+        @foreach (var p in Model.Products)
+        {
+            <tr>
+                <td>@p.Id</td>
+                <td>@p.Nombre</td>
+                <td>@p.Precio</td>
+            </tr>
+        }
+    </tbody>
+</table>
