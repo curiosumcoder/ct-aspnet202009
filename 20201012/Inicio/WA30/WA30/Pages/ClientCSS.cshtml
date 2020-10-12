@@ -1,0 +1,54 @@
+﻿@page
+@model WA30.Pages.ClientCSSModel
+@{
+}
+
+<h2>Index</h2>
+
+<form method="post">
+    <input asp-for="Filter" placeholder="Type filter here" />
+    <button type="submit">Search</button>
+</form>
+
+@if (Model.Products != null && Model.Products.Any())
+{
+    <div>
+        @foreach (var gp in Model.Products)
+        {
+            <section>
+                <h3>@gp.Key</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>QuantityPerUnit</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var p in gp)
+                        {
+                            <tr>
+                                <td>@p.ProductName</td>
+                                <td>@p.QuantityPerUnit</td>
+                                <td>@p.UnitPrice</td>
+                                <td>@p.UnitsInStock</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4">
+                                Cantidad de Productos:
+                                <span class="cantidad">@gp.Count()</span>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </section>
+        }
+
+    </div>
+}

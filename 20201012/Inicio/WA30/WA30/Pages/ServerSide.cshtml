@@ -1,0 +1,26 @@
+﻿@page "{filter?}"
+@model WA30.Pages.ServerSideModel
+@{
+}
+
+<h1>Server Side</h1>
+
+<a asp-route-filter="ar">Filter by: "ar"</a>
+
+<form method="post">
+    <input asp-for="Filter" placeholder="Type filter here" />
+    <button type="submit">Search</button>
+</form>
+
+<table>
+    <tbody>
+        @foreach (var p in Model.Products)
+        {
+            <tr>
+                <td>@p.ProductId</td>
+                <td>@p.ProductName</td>
+                <td>@p.UnitPrice</td>
+            </tr>
+        }
+    </tbody>
+</table>
