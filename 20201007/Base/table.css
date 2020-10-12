@@ -1,0 +1,33 @@
+﻿table {
+    border: 1px solid black;
+    padding: 0.5em;
+    width: 50em;
+    border-radius: 5px;
+}
+
+section table:hover {
+    color: #8c25aa;
+    cursor: pointer;
+}
+
+table .resaltar th, .resaltar {
+    color: #ffd800;
+    border: 1px dotted red;
+}
+
+table.bordes {
+    border-collapse: collapse;
+}
+
+table.bordes thead {
+    border-bottom: 0.25em solid gray;
+}
+
+table.bordes tbody td {
+    border-bottom: 1px solid blue;
+    border-right: 1px dotted gray;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #e9bce1;
+}
