@@ -1,0 +1,22 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "twitter-bootstrap@4.5.2",
+      "destination": "wwwroot/lib/twitter-bootstrap/",
+      "files": [
+        "css/bootstrap.css",
+        "css/bootstrap.min.css"
+      ]
+    },
+    {
+      "library": "underscore.js@1.11.0",
+      "destination": "wwwroot/lib/underscore.js/"
+    },
+    {
+      "library": "vue@3.0.0",
+      "destination": "wwwroot/lib/vue/"
+    }
+  ]
+}

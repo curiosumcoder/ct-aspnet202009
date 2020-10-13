@@ -1,0 +1,30 @@
+﻿@page
+@model WA30.Pages.ClientAjaxModel
+@{
+}
+
+<link href="~/lib/twitter-bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+
+<h2>Index</h2>
+
+<form>
+    <input id="filter" placeholder="Type filter here" />
+    <button id="bSearch">Search</button>
+</form>
+
+<table class="table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>QuantityPerUnit</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Category</th>
+            <th>Supplier</th>
+        </tr>
+    </thead>
+    <tbody id="list"></tbody>
+</table>
+
+<script src="~/lib/underscore.js/underscore.js"></script>
+<script src="~/js/product.js"></script>
