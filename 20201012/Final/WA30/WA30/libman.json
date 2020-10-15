@@ -15,7 +15,7 @@
       "destination": "wwwroot/lib/underscore.js/"
     },
     {
-      "library": "vue@3.0.0",
+      "library": "vue@2.6.12",
       "destination": "wwwroot/lib/vue/"
     }
   ]
