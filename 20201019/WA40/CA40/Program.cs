@@ -26,10 +26,10 @@ namespace CA40
             //CRUD();
             //LINQToEntities();
             //EagerLoading();
-            //LazyLoading();
+            LazyLoading();
             //LINQDynamic();
             //LINQToXML();
-            PLINQ();
+            //PLINQ();
             //Transactions();
             //RawSQL();
             //RawSQLClient();
@@ -447,7 +447,7 @@ namespace CA40
                        Include("Orders.OrderDetails").
                        OrderBy(c => c.CustomerId).
                        Skip(10).Take(2)
-                       select c;
+                                       select c;
 
                 var customersOrders2x = db.Customers.
                     Include("Orders").
@@ -474,8 +474,8 @@ namespace CA40
             // Lazy Loading
             using (NWContext db = new NWContext())
             {
-                bool isLazy = true;
-                db.ChangeTracker.LazyLoadingEnabled = isLazy; // default = true
+                //bool isLazy = true;
+                //db.ChangeTracker.LazyLoadingEnabled = isLazy; // default = true
 
                 // .Include(c=>c.Orders).
                 var customers = db.Customers.
@@ -634,15 +634,15 @@ namespace CA40
                 var pQuantity = new SqlParameter("quantity", quantity);
                 int affected = db.Database.ExecuteSqlRaw("update [Order Details] set Quantity = @quantity where OrderID = 10248 and ProductID = 11", pQuantity);
 
-                var filter = "queso";
+                var filter = 1;
                 var products0 = db.Products.FromSqlInterpolated(@$"SELECT [ProductID],[ProductName],[SupplierID],[CategoryID]
                         ,[QuantityPerUnit],[UnitPrice],[UnitsInStock],[UnitsOnOrder],[ReorderLevel],[Discontinued]
-                        FROM[dbo].[Products] WHERE [ProductName] LIKE {filter}");
+                        FROM[dbo].[Products] WHERE [ProductID] = {filter}");
 
                 var pFilter = new SqlParameter("filter", filter);
                 var products1 = db.Products.FromSqlRaw(@$"SELECT [ProductID],[ProductName],[SupplierID],[CategoryID]
                         ,[QuantityPerUnit],[UnitPrice],[UnitsInStock],[UnitsOnOrder],[ReorderLevel],[Discontinued]
-                        FROM[dbo].[Products] WHERE [ProductName] LIKE @filter", pFilter);
+                        FROM[dbo].[Products] WHERE [ProductID] = @filter", pFilter);
             }
         }
 
@@ -666,12 +666,17 @@ namespace CA40
                 where o.CustomerID = @customerId";
                 comm.Parameters.Add(new SqlParameter("customerId", customerId));
 
-                var reader = comm.ExecuteReader();
-                while (reader.Read())
+                conn.Open();
+
+                using (var reader = comm.ExecuteReader())
                 {
-                    var oId = reader.GetString(0);
-                    var oTotal = Convert.ToDecimal(reader["OrderTotal"]);
+                    while (reader.Read())
+                    {
+                        var oId = reader.GetInt32(0);
+                        var oTotal = Convert.ToDecimal(reader["OrderTotal"]);
+                    }
                 }
+
                 var da = new SqlDataAdapter(comm);
                 var dt = new DataTable();
                 da.Fill(dt);
@@ -683,7 +688,7 @@ namespace CA40
                     var line = new StringBuilder();
                     foreach (DataColumn c in columns)
                     {
-                        line.Append($"{dr.Field<string>(c.ColumnName)}, ");
+                        line.Append($"{dr.Field<int>("OrderID")}, ");
                     }
                     Console.WriteLine(line);
                 }
