@@ -48,7 +48,7 @@ namespace CA40
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             // Microsoft.EntityFrameworkCore.Proxies
-            // optionsBuilder.UseLazyLoadingProxies();
+            optionsBuilder.UseLazyLoadingProxies();
 
             if (!optionsBuilder.IsConfigured)
             {

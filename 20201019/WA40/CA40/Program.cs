@@ -477,11 +477,11 @@ namespace CA40
                 //bool isLazy = true;
                 //db.ChangeTracker.LazyLoadingEnabled = isLazy; // default = true
 
-                // .Include(c=>c.Orders).
+                // .Include(c=>c.Orders). // Eager Loading
                 var customers = db.Customers.
                     OrderBy(c => c.CustomerId);
 
-                foreach (var c in customers)
+                foreach (var c in customers.ToList())
                 {
                     Console.WriteLine($"{c.CustomerId}, {c.ContactName}");
 
