@@ -26,7 +26,7 @@ namespace CA40
             //CRUD();
             //LINQToEntities();
             //EagerLoading();
-            LazyLoading();
+            //LazyLoading();
             //LINQDynamic();
             //LINQToXML();
             //PLINQ();
