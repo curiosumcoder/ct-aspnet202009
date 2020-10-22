@@ -5,9 +5,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Northwind.Store.Model
 {
-    public partial class Products
+    public partial class Product
     {
-        public Products()
+        public Product()
         {
             OrderDetails = new HashSet<OrderDetails>();
         }

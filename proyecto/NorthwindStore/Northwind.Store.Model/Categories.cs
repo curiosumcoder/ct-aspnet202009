@@ -9,7 +9,7 @@ namespace Northwind.Store.Model
     {
         public Categories()
         {
-            Products = new HashSet<Products>();
+            Products = new HashSet<Product>();
         }
 
         [Key]
@@ -24,6 +24,6 @@ namespace Northwind.Store.Model
         public byte[] Picture { get; set; }
 
         [InverseProperty("Category")]
-        public virtual ICollection<Products> Products { get; set; }
+        public virtual ICollection<Product> Products { get; set; }
     }
 }

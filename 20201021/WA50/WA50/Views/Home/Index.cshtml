@@ -1,0 +1,34 @@
+﻿@using Northwind.Store.Model
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<h1>Products</h1>
+
+<form method="post">
+    <input name="filter" placeholder="Type filter here" />
+    <button type="submit">Search</button>
+</form>
+
+@if (ViewData["products"] != null)
+{
+    var products = (List<Product>)ViewData["products"];
+    <table>
+        <tbody>
+            @foreach (var p in products)
+            {
+                <tr>
+                    <td>@p.ProductId</td>
+                    <td>@p.ProductName</td>
+                    <td>@p.UnitPrice</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@section Scripts {
+    <script>
+        console.log('Probando sections de ASP.NET Core MVC');
+    </script>
+}

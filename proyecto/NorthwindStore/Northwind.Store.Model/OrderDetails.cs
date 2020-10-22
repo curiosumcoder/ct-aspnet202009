@@ -23,7 +23,7 @@ namespace Northwind.Store.Model
         [InverseProperty(nameof(Orders.OrderDetails))]
         public virtual Orders Order { get; set; }
         [ForeignKey(nameof(ProductId))]
-        [InverseProperty(nameof(Products.OrderDetails))]
-        public virtual Products Product { get; set; }
+        [InverseProperty(nameof(Model.Product.OrderDetails))]
+        public virtual Product Product { get; set; }
     }
 }

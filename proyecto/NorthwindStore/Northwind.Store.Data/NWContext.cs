@@ -35,7 +35,7 @@ namespace Northwind.Store.Data
         public virtual DbSet<Orders> Orders { get; set; }
         public virtual DbSet<OrdersQry> OrdersQry { get; set; }
         public virtual DbSet<ProductSalesFor1997> ProductSalesFor1997 { get; set; }
-        public virtual DbSet<Products> Products { get; set; }
+        public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<ProductsAboveAveragePrice> ProductsAboveAveragePrice { get; set; }
         public virtual DbSet<ProductsByCategory> ProductsByCategory { get; set; }
         public virtual DbSet<QuarterlyOrders> QuarterlyOrders { get; set; }
@@ -286,7 +286,7 @@ namespace Northwind.Store.Data
                 entity.ToView("Product Sales for 1997");
             });
 
-            modelBuilder.Entity<Products>(entity =>
+            modelBuilder.Entity<Product>(entity =>
             {
                 entity.HasIndex(e => e.CategoryId)
                     .HasName("CategoryID");
