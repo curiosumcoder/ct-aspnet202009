@@ -1,0 +1,53 @@
+﻿@model WA50.ViewModels.ProductIndexViewModel
+@using Northwind.Store.Model
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<h1>Products</h1>
+
+<form method="post">
+    @*<input name="filter" placeholder="Type filter here" />*@
+    <input asp-for="Filter" placeholder="Type filter here" />
+    <button type="submit">Search</button>
+</form>
+
+@*@if (ViewData["products"] != null)*@
+@if (Model.Products != null && Model.Products.Count > 0)
+{
+    //var products = (List<Product>)ViewData["products"];
+    //var products = (List<Product>)ViewBag.products;
+    var products = Model.Products;
+    <table>
+        <tbody>
+            @foreach (var p in products)
+            {
+                <tr>
+                    <td>@p.ProductId</td>
+                    <td>@p.ProductName</td>
+                    <td>@p.UnitPrice</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td>
+                    <a href="@Url.Action("Index")?page=1" title="Previous">&lt;</a>
+                </td>
+                <td>
+                    1 / 2
+                </td>
+                <td>
+                    <a href="@Url.Action("Index")?page=5" title="Next">&gt;</a>
+                </td>
+                <td colspan="5">Total Items: 20</td>
+            </tr>
+        </tfoot>
+    </table>
+}
+
+@section Scripts {
+    <script>
+        console.log('Probando sections de ASP.NET Core MVC');
+    </script>
+}
