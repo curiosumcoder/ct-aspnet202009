@@ -27,19 +27,30 @@ namespace WA50.Controllers
         //public IActionResult Index(string filter = "")
         public IActionResult Index(ProductIndexViewModel vm)
         {
-            HttpContext.Session.SetString(nameof(vm.Filter), vm.Filter ?? "");
             var filter = HttpContext.Session.GetString(nameof(vm.Filter));
-            
+
+            vm.Filter = (vm.Filter ?? filter) ?? "";
+            HttpContext.Session.SetString(nameof(vm.Filter), vm.Filter);
+
+            if (vm.Filter != filter)
+            {
+                vm.Page = 1;
+            }
+
             var result = new List<Product>();
             using (var db = new NWContext())
             {
                 //result = db.Products.Where(p=> p.ProductName.Contains(filter)).ToList();
-                result = db.Products.Where(p => p.ProductName.Contains(vm.Filter)).ToList();
+                //result = db.Products.Where(p => p.ProductName.Contains(vm.Filter)).ToList();
+                vm.TotalCount = db.Products.Where(p => p.ProductName.Contains(vm.Filter)).Count();
+
+                result = db.Products.Where(p => p.ProductName.Contains(vm.Filter))
+                    .OrderBy(p => p.ProductName).Skip((vm.Page - 1) * vm.PageSize).
+                    Take(vm.PageSize).ToList();
             }
 
             //var vm = new ProductIndexViewModel() { Products = result };
             vm.Products = result;
-
 
             // Dictionary
             //ViewData["products"] = result;

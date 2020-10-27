@@ -6,7 +6,7 @@
 
 <h1>Products</h1>
 
-<form method="post">
+<form method="get">
     @*<input name="filter" placeholder="Type filter here" />*@
     <input asp-for="Filter" placeholder="Type filter here" />
     <button type="submit">Search</button>
@@ -18,7 +18,7 @@
     //var products = (List<Product>)ViewData["products"];
     //var products = (List<Product>)ViewBag.products;
     var products = Model.Products;
-    <table>
+    <table class="table">
         <tbody>
             @foreach (var p in products)
             {
@@ -30,18 +30,30 @@
             }
         </tbody>
         <tfoot>
-            <tr>
-                <td>
-                    <a href="@Url.Action("Index")?page=1" title="Previous">&lt;</a>
-                </td>
-                <td>
-                    1 / 2
-                </td>
-                <td>
-                    <a href="@Url.Action("Index")?page=5" title="Next">&gt;</a>
-                </td>
-                <td colspan="5">Total Items: 20</td>
-            </tr>
+            @if (Model.TotalCount > Model.PageSize)
+            {
+                <tr>
+                    @{
+                        int previous = Model.Page - 1;
+                        int next = Model.Page + 1;
+                    }
+                    <td>
+                        @if (previous > 0)
+                        {
+                            <a href="@Url.Action("Index")?page=@previous" title="Previous">&lt;</a>
+                        }
+                    </td>
+                    <td>
+                        @Model.Page / @Model.PageCount  <strong>Total Items: @Model.TotalCount</strong>
+                    </td>
+                    <td>
+                        @if (next <= Model.PageCount)
+                        {
+                            <a href="@Url.Action("Index")?page=@next" title="Next">&gt;</a>
+                        }
+                    </td>
+                </tr>
+            }
         </tfoot>
     </table>
 }
