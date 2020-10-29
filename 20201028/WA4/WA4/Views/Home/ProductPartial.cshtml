@@ -1,0 +1,14 @@
+﻿@model Northwind.Store.Model.Product
+
+<tr>
+    <td>@Model.ProductName</td>
+    <td>@Model.QuantityPerUnit</td>
+    <td>@Model.UnitPrice</td>
+    <td>@Model.UnitsInStock</td>
+    <td>
+        <a asp-controller="Product" asp-action="Detail"
+           asp-route-id="@Model.ProductId">
+            Detail
+        </a>
+    </td>
+</tr>

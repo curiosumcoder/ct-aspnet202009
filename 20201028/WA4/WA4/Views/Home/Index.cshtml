@@ -1,0 +1,182 @@
+﻿@using WA4.ViewModels
+@using WA4.Helpers.HTML
+
+@model IEnumerable<CategoryProductsViewModel>
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="row">
+    <div class="col-4">
+        <a class="btn btn-outline-primary"
+           ajax="true" ajax-url="/Home/IndexPartial/1" ajax-target="#demo" ajax-mode="after">
+            Get Detail
+        </a>
+    </div>
+    <div class="col-8">
+        <form class="form-inline" ajax="true" ajax-method="post"
+              ajax-url="/Home/IndexPartial" ajax-target="#demo"
+              ajax-failure="productAjaxFailure">
+            <div class="form-group">
+                <label>Product ID</label>
+                <input type="text" class="form-control" name="id" placeholder="Type product ID">
+            </div>
+            <button type="submit" class="btn btn-primary">Get Detail</button>
+        </form>
+        <script>
+            function productAjaxFailure(xhr) {
+                if (xhr.status === 404) {
+                    alert('Product not found!');
+                }
+            }
+        </script>
+    </div>
+</div>
+<table class="table table-bordered table-striped">
+    <tbody id="demo"></tbody>
+</table>
+
+@section scripts {
+    <environment names="Development">
+        <script src="~/lib/jquery-ajax-unobtrusive/dist/jquery.unobtrusive-ajax.js"></script>
+    </environment>
+    <environment names="Production">
+        <script src="~/lib/jquery-ajax-unobtrusive/dist/jquery.unobtrusive-ajax.min.js"></script>
+    </environment>
+}
+
+<hr />
+
+@{
+    // Templated Razor Delegates
+    // https://docs.microsoft.com/en-us/aspnet/core/mvc/views/razor?view=aspnetcore-3.1#templated-razor-delegates
+    Func<dynamic, object> productTemplate = @<tr>
+        <td>@item.ProductName</td>
+        <td>@item.QuantityPerUnit</td>
+        <td>@item.UnitPrice</td>
+        <td>@item.UnitsInStock</td>
+        <td>
+            <a asp-controller="Product" asp-action="Detail"
+               asp-route-id="@item.ProductId">
+                Detail
+            </a>
+        </td>
+    </tr>;
+}
+
+@{
+    async Task productTemplate2(Northwind.Store.Model.Product p)
+    {
+        <tr>
+            <td>@p.ProductName</td>
+            <td>@p.QuantityPerUnit</td>
+            <td>@p.UnitPrice</td>
+            <td>@p.UnitsInStock</td>
+            <td>
+                <a asp-controller="Product" asp-action="Detail"
+                   asp-route-id="@p.ProductId">
+                    Detail
+                </a>
+            </td>
+        </tr>
+    }
+}
+
+<div class="row">
+    <div class="col-12">
+        <h2>Products</h2>
+
+        <div class="row">
+            <div class="col-12">
+                <form asp-action="Index">
+                    <div class="form-group">
+                        <input type="search" class="form-control" name="filter"
+                               placeholder="Search filter ..." value="@ViewBag.filter">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+            </div>
+        </div>
+
+        <hr />
+
+        @if (Model != null && Model.Any())
+        {
+            foreach (CategoryProductsViewModel c in Model)
+            {
+                <section>
+                    <h3>@c.CategoryName</h3>
+
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>QuantityPerUnit</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var p in c.Items)
+                            {
+                                <tr>
+                                    <td>@p.ProductName</td>
+                                    <td>@p.QuantityPerUnit</td>
+                                    <td>@p.UnitPrice</td>
+                                    <td>@p.UnitsInStock</td>
+                                </tr>
+
+                                //Html Helpers
+                                @*@ProductHelper.ProductDetail(p)*@
+                                @*@ProductHelper.ProductDetail2(p)*@
+                                @*@Html.ProductDetail(p)*@
+
+                                // Tag Helpers
+                                @*<product data="p" />*@
+                                @*<tr product="p"></tr>*@
+
+                                // View Components
+                                @*@await Component.InvokeAsync("Product", new { id = p.ProductId })*@
+                                @*<vc:product id="p.ProductId" />*@
+
+                                // Partial Views
+                                @*<partial name="ProductPartial" model="p" />*@
+                                //await Html.RenderPartialAsync("ProductPartial", p);
+                                @*@await Html.PartialAsync("ProductPartial", p)*@
+
+                                // Templated Razor Delegates
+                                @*@productTemplate(p)*@
+                                //await productTemplate2(p);
+                                @*@productLine(p,
+                                    @<tr><td>@p.ProductName</td>
+                                    <td>@p.QuantityPerUnit</td><td>@p.UnitPrice</td></tr>);*@
+
+                                <component type="typeof(WA4.UI.Basic.ProductDetail)" render-mode="ServerPrerendered" />
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="4">
+                                    Items <span class="badge badge-info"> @c.Items.Count</span>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </section>
+            }
+        }
+    </div>
+</div>
+
+@using Microsoft.AspNetCore.Html
+@functions {
+    public static IHtmlContent productLine(dynamic item, Func<dynamic, IHtmlContent> template)
+    {
+        var html = new HtmlContentBuilder();
+
+        html.AppendHtml(template(item));
+
+        return html;
+    }
+}
