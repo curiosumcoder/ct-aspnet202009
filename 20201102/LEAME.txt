@@ -30,3 +30,20 @@
 
 dotnet ef migrations add IdentityNew -c ApplicationDbContext
 dotnet ef database update -c ApplicationDbContext
+
+---------------------------------------------------------------------------------------
+Area
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapAreaControllerRoute("admin", "admin", "admin/{controller=Home}/{action=Index}/{id?}");
+
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
+            });
+
+
+....
+    [Area("Admin")]

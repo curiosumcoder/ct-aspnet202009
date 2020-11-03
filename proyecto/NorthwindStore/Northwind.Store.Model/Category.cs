@@ -5,9 +5,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Northwind.Store.Model
 {
-    public partial class Categories
+    public partial class Category
     {
-        public Categories()
+        public Category()
         {
             Products = new HashSet<Product>();
         }

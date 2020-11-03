@@ -9,9 +9,9 @@ namespace Northwind.Store.Data
 {
     public partial class NWContext : DbContext
     {
-        public NWContext()
-        {
-        }
+        //public NWContext()
+        //{
+        //}
 
         public NWContext(DbContextOptions<NWContext> options)
             : base(options)
@@ -19,7 +19,7 @@ namespace Northwind.Store.Data
         }
 
         public virtual DbSet<AlphabeticalListOfProducts> AlphabeticalListOfProducts { get; set; }
-        public virtual DbSet<Categories> Categories { get; set; }
+        public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<CategorySalesFor1997> CategorySalesFor1997 { get; set; }
         public virtual DbSet<CurrentProductList> CurrentProductList { get; set; }
         public virtual DbSet<CustomerAndSuppliersByCity> CustomerAndSuppliersByCity { get; set; }
@@ -71,7 +71,7 @@ namespace Northwind.Store.Data
                 entity.ToView("Alphabetical list of products");
             });
 
-            modelBuilder.Entity<Categories>(entity =>
+            modelBuilder.Entity<Category>(entity =>
             {
                 entity.HasIndex(e => e.CategoryName)
                     .HasName("CategoryName");
