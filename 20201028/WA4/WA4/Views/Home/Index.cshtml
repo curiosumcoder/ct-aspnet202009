@@ -132,7 +132,7 @@
                                 @*@ProductHelper.ProductDetail2(p)*@
                                 @*@Html.ProductDetail(p)*@
 
-                                // Tag Helpers
+                                // Tag Helpers (Components)
                                 @*<product data="p" />*@
                                 @*<tr product="p"></tr>*@
 
@@ -146,13 +146,13 @@
                                 @*@await Html.PartialAsync("ProductPartial", p)*@
 
                                 // Templated Razor Delegates
-                                @*@productTemplate(p)*@
-                                //await productTemplate2(p);
+                                @*@productTemplate(p)
+                                await productTemplate2(p);*@
                                 @*@productLine(p,
                                     @<tr><td>@p.ProductName</td>
                                     <td>@p.QuantityPerUnit</td><td>@p.UnitPrice</td></tr>);*@
 
-                                <component type="typeof(WA4.UI.Basic.ProductDetail)" render-mode="ServerPrerendered" />
+                                @*<component type="typeof(WA4.UI.Basic.ProductDetail)" render-mode="ServerPrerendered" />*@
                             }
                         </tbody>
                         <tfoot>
