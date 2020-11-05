@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +13,7 @@ using Northwind.Store.Model;
 
 namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
 {
+    [Authorize]
     [Area("Admin")]
     public class CategoryController : Controller
     {
@@ -20,13 +24,20 @@ namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
             _context = context;
         }
 
+        //public IActionResult Index0()
+        //{
+        //    return View(_context.Categories.ToList());
+        //}
+
         // GET: Admin/Category
+        //[Authorize]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Categories.ToListAsync());
         }
 
         // GET: Admin/Category/Details/5
+        //[AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -55,10 +66,19 @@ namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CategoryId,CategoryName,Description,Picture")] Category category)
+        public async Task<IActionResult> Create([Bind("CategoryId,CategoryName,Description,Picture")] Category category, IFormFile picture)
         {
             if (ModelState.IsValid)
             {
+                if (picture != null)
+                {
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        picture.CopyTo(ms);
+                        category.Picture = ms.ToArray();
+                    }
+                }
+
                 _context.Add(category);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -149,6 +169,25 @@ namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
         private bool CategoryExists(int id)
         {
             return _context.Categories.Any(e => e.CategoryId == id);
+        }
+
+        public async Task<FileStreamResult> ReadImage(int id)
+        {
+            FileStreamResult result = null;
+
+            var image = await _context.Categories.Where(c => c.CategoryId == id).Select(i => i.Picture).AsNoTracking().FirstOrDefaultAsync();
+
+            if (image != null)
+            {
+                var stream = new MemoryStream(image);
+
+                if (stream != null)
+                {
+                    result = File(stream, "image/jpg");
+                }
+            }
+
+            return result;
         }
     }
 }

@@ -25,8 +25,17 @@
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Picture)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Picture)
+        <dd class="col-sm-10">
+            @*@Html.DisplayFor(model => model.Picture)*@
+
+            @if (Model.Picture == null)
+            {
+                <div class="no-image"></div>
+            }
+            else
+            {
+                <img src='@Url.Action("ReadImage", new { id = Model.CategoryId })' alt="Imagen desde archivo" style="width: 80px" />
+            }
         </dd>
     </dl>
 </div>

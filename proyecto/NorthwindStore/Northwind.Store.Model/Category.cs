@@ -18,6 +18,7 @@ namespace Northwind.Store.Model
         [Required]
         [StringLength(15)]
         public string CategoryName { get; set; }
+
         [Column(TypeName = "ntext")]
         public string Description { get; set; }
         [Column(TypeName = "image")]

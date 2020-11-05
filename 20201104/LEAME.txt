@@ -1,0 +1,102 @@
+[Authorize]
+[Area("Admin")]
+public class CategoryController : Controller
+{
+
+-------------------------------------------------------------------------------------
+
+<li class="nav-item dropdown">
+	<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		Admin
+	</a>
+	<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+		<a class="dropdown-item" asp-area="admin" asp-controller="Category">Category</a>
+		<a class="dropdown-item" asp-area="admin" asp-controller="Product">Product</a>
+	</div>
+</li>
+
+-------------------------------------------------------------------------------------
+
+[ModelMetadataType(typeof(CategoryMetadata))]
+public partial class Category : ModelBase
+{
+	public class CategoryMetadata
+	{
+		[Required(ErrorMessage = "El nombre es requerido.")]
+		[Display(Name = "Nombre")]
+		public string CategoryName { get; set; }
+
+		[Required(ErrorMessage = "La descripción es requerida.")]
+		[Display(Name = "Descripción")]
+		public string Description { get; set; }
+	}
+}
+
+-------------------------------------------------------------------------------------
+
+<div class="form-group">
+	<label asp-for="Picture" class="control-label"></label>
+	<input asp-for="Picture" class="form-control" accept=".jpg" type="file" />
+	<span asp-validation-for="Picture" class="text-danger"></span>
+</div>
+			
+.............................
+			
+public async Task<IActionResult> Create([Bind("CategoryId,CategoryName,Description,Picture")] Category category, IFormFile picture)
+{
+	if (ModelState.IsValid)
+	{
+		if (picture != null)
+		{
+			using (MemoryStream ms = new MemoryStream())
+			{
+				picture.CopyTo(ms);
+				category.Picture = ms.ToArray();
+			}
+		}
+
+		_context.Add(category);
+		await _context.SaveChangesAsync();
+		return RedirectToAction(nameof(Index));
+	}
+	return View(category);
+}
+
+.............................
+
+        public async Task<FileStreamResult> ReadImage(int id)
+        {
+            FileStreamResult result = null;
+
+            var image = await _context.Categories.Where(c => c.CategoryId == id).Select(i => i.Picture).AsNoTracking().FirstOrDefaultAsync();
+
+            if (image != null)
+            {
+                var stream = new MemoryStream(image);
+
+                if (stream != null)
+                {
+                    result = File(stream, "image/jpg");
+                }
+            }
+
+            return result;
+        }
+		
+.............................
+		
+<dd class="col-sm-10">
+	@*@Html.DisplayFor(model => model.Picture)*@
+
+	@if (Model.Picture == null)
+	{
+		<div class="no-image"></div>
+	}
+	else
+	{
+		<img src='@Url.Action("ReadImage", new { id = Model.CategoryId })' alt="Imagen desde archivo" style="width: 80px" />
+	}
+</dd>		
+
+-------------------------------------------------------------------------------------
+- Customers, Employees, Products, Region, Shippers, Suppliers, Territories,  Orders (Order Details)
