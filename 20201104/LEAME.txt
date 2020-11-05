@@ -108,5 +108,12 @@ para los modelos
 
 - Customers, Employees, Products, Region, Shippers, Suppliers, Territories, Orders
 
-Opcional: Agregar a la acción de Details del controlador de Orders, que se muestre
+Opcional 1: Agregar a la acción de Details del controlador de Orders, que se muestre
 el detalle de los productos de la orden y el monto total de la misma.
+
+Opcional 2: Agregar que los listados obtenidos en la acción de Index de los controladores 
+agregados, permitan: paginación, y ordenamiento por una columna (el usuario puede
+ordenar por una columna a la vez).
+
+Opcional 3: Que el listado obtenido en "Opcional 1" y "Opcional 2" funcione de
+forma asincrónica (Partial Rendering) haciendo uso de una técnica AJAX.
