@@ -98,5 +98,15 @@ public async Task<IActionResult> Create([Bind("CategoryId,CategoryName,Descripti
 	}
 </dd>		
 
+ESTUDIANTES: Modificar el controlador de Category para permitir la 
+modificación de la imagen, así como mostrar la imagen al momento de 
+eliminar la categoría y que se obtiene el detalle de la misma.
+
 -------------------------------------------------------------------------------------
-- Customers, Employees, Products, Region, Shippers, Suppliers, Territories,  Orders (Order Details)
+ESTUDIANTES: Agregar por medio de Scaffolding los mantenimientos de datos (CRUD)
+para los modelos
+
+- Customers, Employees, Products, Region, Shippers, Suppliers, Territories, Orders
+
+Opcional: Agregar a la acción de Details del controlador de Orders, que se muestre
+el detalle de los productos de la orden y el monto total de la misma.
