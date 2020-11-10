@@ -1,0 +1,35 @@
+﻿@model IEnumerable<Northwind.Store.Model.Product>
+
+@if (ViewBag.products != null)
+{
+    <ul>
+        @foreach (var item in (IEnumerable<Northwind.Store.Model.Product>)ViewBag.products)
+        {
+            <li>@item.ProductName</li>
+        }
+    </ul>
+    <hr />
+}
+
+@if (Model != null)
+{
+    <form asp-action="Product3">
+        <table class="table">
+            <tbody>
+                @foreach (var p in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.Hidden("products.Index", p.ProductId)
+                            @Html.Hidden($"products[{p.ProductId}].ProductId", p.ProductId)
+                            <input type="text" name="products[@p.ProductId].ProductName" value="@p.ProductName" />
+                        </td>
+                        <td><input type="text" name="products[@p.ProductId].UnitPrice" value="@p.UnitPrice" /></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <button type="submit" class="btn btn-primary">Enviar</button>
+    </form>
+}
+

@@ -1,0 +1,31 @@
+﻿@model List<Northwind.Store.Model.Product>
+
+@if (ViewBag.products != null)
+{
+    <ul>
+        @foreach (var item in (IEnumerable<Northwind.Store.Model.Product>)ViewBag.products)
+        {
+            <li>@item.ProductName</li>
+        }
+    </ul>
+    <hr />
+}
+
+@if (Model != null)
+{
+    <form asp-action="Product2">
+        <table class="table">
+            <tbody>
+                @for (var i = 0; i < Model.Count(); i++)
+                {
+                    <tr>
+                        <td><input type="text" name="[@i].ProductName" value="@Model[i].ProductName" /></td>
+                        <td><input type="text" name="[@i].UnitPrice" value="@Model[i].UnitPrice" /></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <button type="submit" class="btn btn-primary">Enviar</button>
+    </form>
+}
+

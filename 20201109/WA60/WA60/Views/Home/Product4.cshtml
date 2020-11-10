@@ -1,0 +1,30 @@
+﻿@model IPagedList<Northwind.Store.Model.Product>
+@using X.PagedList.Mvc.Core;
+@using X.PagedList;
+@using X.PagedList.Mvc.Core.Common;
+
+@if (Model != null)
+{
+    <table class="table">
+        <tbody>
+            @foreach (var p in Model)
+            {
+                <tr>
+                    <td>
+                        @p.ProductName
+                    </td>
+                    <td>
+                        @p.UnitPrice
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @Html.PagedListPager(Model, page => Url.Action("Product4", new { page }))
+    @Html.PagedListPager(Model, page => Url.Action("Product4", new { page = page }),
+    new PagedListRenderOptions {
+        LiElementClasses = new string[] { "page-item" },
+        PageClasses = new string[] { "page-link" }
+    })
+}
+
