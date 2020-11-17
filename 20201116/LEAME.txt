@@ -1,0 +1,21 @@
+- Northwind.Store.Model.Model
+	ModelState.cs
+	IObjectWithState.cs
+	ModelBase.cs
+	
+- Northwind.Store.Notification
+	
+- Northwind.Store.Data
+	NWContext2.cs
+	PageFilter.cs
+	IRepository.cs
+	BaseRepository.cs
+	CategoryRepository.cs
+	
+. Northwind.Store.UI.Intranet
+	Startup.cs
+	Northwind.Store.UI.Intranet\Areas\Admin\Cpntroller\Category\CategoryController.cs
+	Northwind.Store.UI.Intranet\Areas\Admin\Views\Category\Index.cshtml
+	bundleconfig.json
+	Northwind.Store.UI.Intranet\Views\Shared\_ValidationScriptsPartial.cshtml
+	Northwind.Store.UI.Intranet\wwwroot\js\forms.js
