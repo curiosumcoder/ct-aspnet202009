@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Northwind.Store.Model
 {
     [ModelMetadataType(typeof(CategoryMetadata))]
-    public partial class Category
+    public partial class Category : ModelBase
     {
         public class CategoryMetadata
         {

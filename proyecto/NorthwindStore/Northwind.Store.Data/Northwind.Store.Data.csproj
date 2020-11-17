@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Northwind.Store.Model\Northwind.Store.Model.csproj" />
+    <ProjectReference Include="..\Northwind.Store.Notification\Northwind.Store.Notification.csproj" />
   </ItemGroup>
 
 </Project>

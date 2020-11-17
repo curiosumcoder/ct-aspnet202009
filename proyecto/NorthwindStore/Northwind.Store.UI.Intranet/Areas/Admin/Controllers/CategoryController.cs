@@ -18,10 +18,12 @@ namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
     public class CategoryController : Controller
     {
         private readonly NWContext _context;
+        private readonly IRepository<Category, int> _cR;
 
-        public CategoryController(NWContext context)
+        public CategoryController(NWContext context, IRepository<Category, int> cR)
         {
             _context = context;
+            _cR = cR;
         }
 
         //public IActionResult Index0()
@@ -33,7 +35,8 @@ namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
         //[Authorize]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Categories.ToListAsync());
+            return View(await _cR.GetList());
+            //return View(await _context.Categories.ToListAsync());
         }
 
         // GET: Admin/Category/Details/5
@@ -45,8 +48,10 @@ namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.CategoryId == id);
+            //var category = await _context.Categories
+            //    .FirstOrDefaultAsync(m => m.CategoryId == id);
+            var category = await _cR.Get(id.Value);
+
             if (category == null)
             {
                 return NotFound();
@@ -78,11 +83,14 @@ namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
                         category.Picture = ms.ToArray();
                     }
                 }
+                //_context.Add(category);
+                //await _context.SaveChangesAsync();
+                category.State = Model.ModelState.Added;
+                await _cR.Save(category);
 
-                _context.Add(category);
-                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             return View(category);
         }
 
@@ -94,7 +102,9 @@ namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories.FindAsync(id);
+            //var category = await _context.Categories.FindAsync(id);
+            var category = await _cR.Get(id.Value);
+
             if (category == null)
             {
                 return NotFound();
@@ -107,7 +117,7 @@ namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CategoryId,CategoryName,Description,Picture")] Category category)
+        public async Task<IActionResult> Edit(int id, [Bind("CategoryId,CategoryName,Description,Picture,ModifiedProperties,RowVersion")] Category category)
         {
             if (id != category.CategoryId)
             {
@@ -116,22 +126,26 @@ namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(category);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CategoryExists(category.CategoryId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                //try
+                //{
+                //    _context.Update(category);
+                //    await _context.SaveChangesAsync();
+                //}
+                //catch (DbUpdateConcurrencyException)
+                //{
+                //    if (!CategoryExists(category.CategoryId))
+                //    {
+                //        return NotFound();
+                //    }
+                //    else
+                //    {
+                //        throw;
+                //    }
+                //}
+
+                category.State = Model.ModelState.Modified;
+                await _cR.Save(category);
+
                 return RedirectToAction(nameof(Index));
             }
             return View(category);
@@ -160,9 +174,12 @@ namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
-            _context.Categories.Remove(category);
-            await _context.SaveChangesAsync();
+            //var category = await _context.Categories.FindAsync(id);
+            //_context.Categories.Remove(category);
+            //await _context.SaveChangesAsync();
+
+            await _cR.Delete(id);
+
             return RedirectToAction(nameof(Index));
         }
 

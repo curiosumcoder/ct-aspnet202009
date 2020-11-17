@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Northwind.Store.Data;
+using Northwind.Store.Model;
 
 namespace Northwind.Store.UI.Intranet
 {
@@ -42,6 +43,9 @@ namespace Northwind.Store.UI.Intranet
 
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            //services.AddTransient<IRepository<Category, int>, BaseRepository<Category, int>>();
+            services.AddTransient<IRepository<Category, int>, CategoryRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

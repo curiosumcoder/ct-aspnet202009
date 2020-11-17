@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.IO;
+using Northwind.Store.Data;
 
 namespace Northwind.Store.UI.Shell
 {
@@ -6,7 +10,19 @@ namespace Northwind.Store.UI.Shell
     {
         static void Main(string[] args)
         {
-            using (var db = new Data.NWContext())
+            #region Uso de archivo de configuración
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json");
+
+            IConfigurationRoot configuration = builder.Build();
+
+            var optionsBuilder = new DbContextOptionsBuilder<NWContext>();
+            optionsBuilder.UseSqlServer(configuration.GetConnectionString("NW"));
+            #endregion
+
+            //using (var db = new Data.NWContext())
+            using (var db = new NWContext(optionsBuilder.Options))
             {
                 foreach (var c in db.Customers)
                 {
