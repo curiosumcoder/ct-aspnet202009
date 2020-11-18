@@ -46,6 +46,7 @@ namespace Northwind.Store.UI.Intranet
 
             //services.AddTransient<IRepository<Category, int>, BaseRepository<Category, int>>();
             services.AddTransient<IRepository<Category, int>, CategoryRepository>();
+            services.AddTransient(typeof(CategoryRepository));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

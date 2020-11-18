@@ -1,11 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Northwind.Store.Model
 {
     [ModelMetadataType(typeof(CategoryMetadata))]
     public partial class Category : ModelBase
     {
+        /// <summary>
+        /// Fotografía en formato Base64. Para utilizar en presentación.
+        /// </summary>
+        [NotMapped]
+        public string PictureBase64 { get; set; }
+
         public class CategoryMetadata
         {
             [Required(ErrorMessage = "El nombre es requerido.")]
@@ -14,7 +21,7 @@ namespace Northwind.Store.Model
 
             [Required(ErrorMessage = "La descripción es requerida.")]
             [Display(Name = "Descripción", Prompt = "Digite la descripción")]
-            [StringLength(16, ErrorMessage = "Máximo de {1} caracteres")]
+            [StringLength(256, ErrorMessage = "Máximo de {1} caracteres")]
             public string Description { get; set; }
         }
     }

@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Northwind.Store.Data;
 using Northwind.Store.Model;
+using Northwind.Store.Notification;
 
 namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
 {
@@ -17,13 +15,17 @@ namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
     [Area("Admin")]
     public class CategoryController : Controller
     {
+        private readonly Notifications ns = new Notifications();
+
         private readonly NWContext _context;
         private readonly IRepository<Category, int> _cR;
+        private readonly CategoryRepository _cR2;
 
-        public CategoryController(NWContext context, IRepository<Category, int> cR)
+        public CategoryController(NWContext context, IRepository<Category, int> cR, CategoryRepository cR2)
         {
             _context = context;
             _cR = cR;
+            _cR2 = cR2;
         }
 
         //public IActionResult Index0()
@@ -33,9 +35,15 @@ namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
 
         // GET: Admin/Category
         //[Authorize]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(ViewModels.CategoryIndexViewModel vm)
+        //public IActionResult Index(ViewModels.CategoryIndexViewModel vm)
         {
-            return View(await _cR.GetList());
+            await vm.HandleRequest(_cR2);
+
+            //vm.Items = await _cR.GetList();
+            return View(vm);
+
+            // return View(await _cR.GetList(pf));
             //return View(await _context.Categories.ToListAsync());
         }
 
@@ -71,7 +79,7 @@ namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CategoryId,CategoryName,Description,Picture")] Category category, IFormFile picture)
+        public async Task<IActionResult> Create([Bind("CategoryId,CategoryName,Description")] Category category, IFormFile picture)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +94,15 @@ namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
                 //_context.Add(category);
                 //await _context.SaveChangesAsync();
                 category.State = Model.ModelState.Added;
-                await _cR.Save(category);
+                await _cR.Save(category, ns);
+
+                if (ns.Any())
+                {
+                    var msg = ns[0];
+                    ModelState.AddModelError("", $"{msg.Title} - {msg.Description}");
+
+                    return View(category);
+                }
 
                 return RedirectToAction(nameof(Index));
             }
@@ -117,7 +133,7 @@ namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CategoryId,CategoryName,Description,Picture,ModifiedProperties,RowVersion")] Category category)
+        public async Task<IActionResult> Edit(int id, [Bind("CategoryId,CategoryName,Description,ModifiedProperties,RowVersion")] Category category, IFormFile picture)
         {
             if (id != category.CategoryId)
             {
@@ -143,8 +159,26 @@ namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
                 //    }
                 //}
 
+                if (picture != null)
+                {
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        picture.CopyTo(ms);
+                        category.Picture = ms.ToArray();
+                    }
+
+                    category.ModifiedProperties.Add("Picture");
+                }
+
                 category.State = Model.ModelState.Modified;
-                await _cR.Save(category);
+                await _cR.Save(category, ns);
+
+                if (ns.Any())
+                {
+                    var msg = ns[0];
+                    ModelState.AddModelError("", $"{msg.Title} - {msg.Description}");
+                    return View(category);
+                }
 
                 return RedirectToAction(nameof(Index));
             }
@@ -192,16 +226,22 @@ namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
         {
             FileStreamResult result = null;
 
-            var image = await _context.Categories.Where(c => c.CategoryId == id).Select(i => i.Picture).AsNoTracking().FirstOrDefaultAsync();
+            //var image = await _context.Categories.Where(c => c.CategoryId == id).Select(i => i.Picture).AsNoTracking().FirstOrDefaultAsync();
 
-            if (image != null)
+            //if (image != null)
+            //{
+            //    var stream = new MemoryStream(image);
+
+            //    if (stream != null)
+            //    {
+            //        result = File(stream, "image/jpg");
+            //    }
+            //}
+
+            var file = await ((CategoryRepository)_cR).GetFileStream(id);
+            if (file != null)
             {
-                var stream = new MemoryStream(image);
-
-                if (stream != null)
-                {
-                    result = File(stream, "image/jpg");
-                }
+                result = File(file, "image/jpg");
             }
 
             return result;

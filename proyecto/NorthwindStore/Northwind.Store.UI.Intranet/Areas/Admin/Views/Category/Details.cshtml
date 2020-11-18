@@ -28,13 +28,22 @@
         <dd class="col-sm-10">
             @*@Html.DisplayFor(model => model.Picture)*@
 
-            @if (Model.Picture == null)
+            @*@if (Model.Picture == null)
             {
                 <div class="no-image"></div>
             }
             else
             {
                 <img src='@Url.Action("ReadImage", new { id = Model.CategoryId })' alt="Imagen desde archivo" style="width: 80px" />
+            }*@
+
+            @if (string.IsNullOrEmpty(Model.PictureBase64))
+            {
+                <div class="no-image"></div>
+            }
+            else
+            {
+                <img src='@Model.PictureBase64' alt="Imagen desde archivo" style="width: 80px" />
             }
         </dd>
     </dl>

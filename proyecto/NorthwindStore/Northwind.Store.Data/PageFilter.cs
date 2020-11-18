@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Northwind.Store.Data
 {
@@ -22,14 +18,14 @@ namespace Northwind.Store.Data
         public int PageSize { get; set; }
 
         /// <summary>
+        /// Cantidad de páginas.
+        /// </summary>
+        public int PageCount => (int)Math.Ceiling((decimal)Count / PageSize);
+
+        /// <summary>
         /// Nombre del campo utilizado para el ordenamiento.
         /// </summary>
         public string Sort { get; set; }
-
-        /// <summary>
-        /// Nombre del campo utilizado para el ordenamiento en caso de que no se asigne.
-        /// </summary>
-        public string DefaultSort { get; set; }
 
         /// <summary>
         /// Dirección del ordenamiento (ASC = ascendente, DESC = descendente)
@@ -43,13 +39,12 @@ namespace Northwind.Store.Data
         {
             get
             {
-                if (string.IsNullOrEmpty(DefaultSort))
+                if (string.IsNullOrEmpty(Sort))
                 {
                     throw new InvalidOperationException("The PageFilter needs a default sort.");
                 }
 
-                return string.IsNullOrEmpty(Sort) ? $"{DefaultSort} {SortDir}" :
-                    $"{Sort} {SortDir}";
+                return string.IsNullOrEmpty(Sort) ? "" : $"{Sort} {SortDir}";
             }
         }
 

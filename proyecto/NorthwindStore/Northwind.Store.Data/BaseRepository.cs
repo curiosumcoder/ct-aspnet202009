@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using System.Linq.Dynamic.Core;
 
 namespace Northwind.Store.Data
 {
@@ -91,7 +92,26 @@ namespace Northwind.Store.Data
 
         public virtual async Task<IEnumerable<T>> GetList(PageFilter pf = null)
         {
-            return await _db.Set<T>().ToListAsync();
+            //return await _db.Set<T>().ToListAsync();
+
+            var result = new List<T>();
+
+            if (pf == null)
+            {
+                result = await _db.Set<T>().AsNoTracking().ToListAsync();
+            }
+            else
+            {
+                pf.Count = await _db.Set<T>().CountAsync();
+
+                result = await _db.Set<T>().
+                    AsNoTracking().
+                    OrderBy(pf.Sorting).
+                    Skip((pf.Page - 1) * pf.PageSize).
+                    Take(pf.PageSize).ToListAsync();
+            }
+
+            return result;
         }
 
         public virtual async Task<IEnumerable<T>> Find(Expression<Func<T, bool>> predicate)
