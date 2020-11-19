@@ -11,6 +11,8 @@
     <a asp-action="Create">Create New</a>
 </p>
 
+<div id="processing" data-message="Procesando espere ..."></div>
+
 <form id="form1" asp-antiforgery="false">
     <div class="d-flex flex-column">
         <div>
@@ -51,7 +53,7 @@
 @Model.Paging.Count
 
 <script>
-    (function enableGrid(main, params, ajax = false, el = "") {
+    (function enableGrid(main, params, ajax = false, el = '', process = '') {
 
         function bindParams(main, params) {
             // Enlace del evento click para los diferentes parámetros
@@ -92,7 +94,8 @@
                 //console.log(nodes);
 
                 if (nodes.length > 0) {
-                    form.classList.add('processing'); // Indicador de procesamiento
+                    let processElement = document.querySelector(`${process}`);
+                    processElement.classList.add('processing'); // Indicador de procesamiento
 
                     // Determinar el elemento después de donde actualizar
                     const previo = nodes[0].previousElementSibling;
@@ -118,10 +121,21 @@
 
                         bindParams(main, params); // Enlazar los parámetros de la interfaz
 
-                        form.classList.remove('processing'); // Indicador de procesamiento
+                        processElement.classList.remove('processing'); // Indicador de procesamiento
                     }
                 }
             });
         }
-    })('#form1', ['command', 'page', 'sort', 'sortdir'], true, '#result');
+
+        // TODO Normalizar nombres de parámetros
+        // Deshabilitar interacción
+        // Personalizar indicador de proqueso
+        // Agregar animación en la presentación de resultados
+    })('#form1', ['command', 'page', 'sort', 'sortdir'], true, '#result', '#processing');
 </script>
+
+<style>
+    .processing:before {
+        content: attr(data-message);
+    }
+</style>
