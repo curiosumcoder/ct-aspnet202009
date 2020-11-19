@@ -1,4 +1,4 @@
-﻿<tbody>
+﻿<tbody id="result">
     @foreach (var item in Model.Items)
     {
         <tr>
@@ -19,11 +19,15 @@
         </tr>
     }
 </tbody>
-<tfoot>
+<tfoot id="result">
     <tr>
-        @for (int i = 1; i <= Model.Paging.PageCount; i++)
-        {
-            <td><button data-page="@i" data-command="paging">@i</button></td>
-        }
+        <td colspan="4">
+            <ul class="pagination">
+                @for (int i = 1; i <= Model.Paging.PageCount; i++)
+                {
+                    <li class="page-item"><button class="page-link" data-page="@i" data-command="paging">@i</button></li>
+                }
+            </ul>
+        </td>
     </tr>
 </tfoot>

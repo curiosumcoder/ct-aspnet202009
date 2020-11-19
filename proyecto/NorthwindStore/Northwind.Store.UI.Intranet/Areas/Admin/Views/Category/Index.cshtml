@@ -10,14 +10,15 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<form method="post" id="form1">
+
+<form id="form1" asp-antiforgery="false">
     <div class="d-flex flex-column">
         <div>
-            <input asp-for="Command" type="hidden" />
+            <input id="command" asp-for="Command" type="hidden" />
             <input asp-for="Filter.CategoryName" placeholder="Search here ..." />
-            <input asp-for="Paging.Page" type="hidden" />
-            <input asp-for="Paging.Sort" type="hidden" />
-            <input asp-for="Paging.SortDir" type="hidden" />
+            <input id="page" asp-for="Paging.Page" type="hidden" />
+            <input id="sort" asp-for="Paging.Sort" type="hidden" />
+            <input id="sortdir" asp-for="Paging.SortDir" type="hidden" />
             <button data-command="search">Search</button>
         </div>
         <div>
@@ -27,6 +28,8 @@
                         <th>
                             @*@Html.DisplayNameFor(m => m.CategoryName)*@
                             <button data-sort="CategoryName" data-command="order">CategoryName</button>
+                            <button data-sortDir="asc">⬆</button>
+                            <button data-sortDir="desc">⬇</button>
                         </th>
                         <th>
                             @*@Html.DisplayNameFor(model => model.Description)*@
@@ -48,86 +51,77 @@
 @Model.Paging.Count
 
 <script>
+    (function enableGrid(main, params, ajax = false, el = "") {
 
-    (function enableGrid(formId) {
+        function bindParams(main, params) {
+            // Enlace del evento click para los diferentes parámetros
+            params.forEach(p => {
+                //console.log(p);
 
-        // Primera forma asin AJAX, usar method='get'
-        let commands = document.querySelectorAll(`#${formId} button[data-command]`);
-        commands.forEach(c => {
-            c.addEventListener('click', function (event) {
-                //event.preventDefault();
-                let cm = this.dataset.command;
+                let actions = document.querySelectorAll(`${main} [data-${p}]`);
+                //console.log(actions);
 
-                const command = document.querySelector(`#${formId} input[name="Command"]`);
-                command.value = cm;
+                actions.forEach(a => {
+                    a.addEventListener('click', function (event) {
+                        //event.preventDefault();
 
-                switch (cm) {
-                    case 'search':
-                        const page1 = document.querySelector(`#${formId} input[name="Paging.Page"]`);
-                        page1.value = 1;
-                        break;
-                    case 'paging':
-                        const page2 = document.querySelector(`#${formId} input[name="Paging.Page"]`);
-                        page2.value = this.dataset.page;
-                        break;
-                    case 'order':
-                        const sort = document.querySelector(`#${formId} input[name="Paging.Sort"]`);
-                        const sortDir = document.querySelector(`#${formId} input[name="Paging.SortDir"]`);
+                        let value = this.dataset[p];
+                        //console.log(value);
 
-                        if (sort.value !== this.dataset.sort) {
-                            sort.value = this.dataset.sort;
-                            sortDir.value = 'ASC';
-                        }
-                        else {
-                            sortDir.value = sortDir.value === 'ASC' ? 'DESC' : 'ASC';
-                        }
-                        break;
+                        let input = document.querySelector(`${main} input[id="${p}"]`);
+                        //console.log(input);
+
+                        input.value = value;
+                    });
+                });
+            });
+        }
+
+        bindParams(main, params); // Enlazar los parámetros de la interfaz
+
+        let form = document.querySelector(main);
+        form.setAttribute('method', ajax ? 'post' : 'get');
+
+        // Hacer el envio con AJAX
+        if (ajax && el.length > 0) {
+            form.addEventListener('submit', async (event) => {
+                event.preventDefault();
+
+                // Determinar la porción a actualizar
+                const nodes = document.querySelectorAll(`${main} ${el}`);
+                //console.log(nodes);
+
+                if (nodes.length > 0) {
+                    form.classList.add('processing'); // Indicador de procesamiento
+
+                    // Determinar el elemento después de donde actualizar
+                    const previo = nodes[0].previousElementSibling;
+                    //console.log(previo);
+
+                    let fd = new FormData(form);
+
+                    //console.log('submit');
+                    //console.log(fd);
+
+                    const response = await fetch(window.location.href, { method: 'post', headers: { 'X-Requested-With': 'fetch' }, body: fd });
+                    //console.log(response);
+
+                    if (response.ok) {
+                        let text = await response.text();
+                        //console.log(text);
+
+                        // Eliminar los elementos actuales
+                        nodes.forEach(n => n.remove());
+
+                        // Se coloca el resultado tomando como base el elemento previo
+                        previo.insertAdjacentHTML('afterend', text);
+
+                        bindParams(main, params); // Enlazar los parámetros de la interfaz
+
+                        form.classList.remove('processing'); // Indicador de procesamiento
+                    }
                 }
             });
-        });
-
-        // Segunda forma con AJAX
-        let form = document.getElementById(formId);
-        form.addEventListener('submit', async (event) => {
-            event.preventDefault();
-
-            let fd = new FormData(form);
-
-            //console.log('submit');
-            //console.log(fd);
-
-            const response = await fetch(window.location.href, {
-                method: 'POST',
-                headers: {
-                    'X-Requested-With': 'fetch'
-                },
-                body: fd
-            });
-
-            console.log(response);
-
-            if (response.ok) {
-                let text = await response.text();
-                console.log(text);
-
-                // Actualizar el DOM
-                const tbody = document.querySelector(`#${formId} table > tbody`);
-                tbody.remove();
-                const tfoot = document.querySelector(`#${formId} table > tfoot`);
-                tfoot.remove();
-
-                // Determinar el lugar en donde colocar el resultado
-                const thead = document.querySelector(`#${formId} table > thead`);
-                console.log(thead);
-                thead.insertAdjacentHTML('afterend', text);
-
-                // TODO Enlazar los clic del paginador
-                // TODO Buscar encapsular
-                // TODO Indicador de procesamiento
-                // TODO Habilitar el funcionamiento sin AJAX con GET, o con AJAX con POST
-            }
-        });
-
-    })('form1');
-
+        }
+    })('#form1', ['command', 'page', 'sort', 'sortdir'], true, '#result');
 </script>
