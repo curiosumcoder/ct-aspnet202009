@@ -10,7 +10,7 @@ namespace Northwind.Store.Model
         public Customers()
         {
             CustomerCustomerDemo = new HashSet<CustomerCustomerDemo>();
-            Orders = new HashSet<Orders>();
+            Orders = new HashSet<Order>();
         }
 
         [Key]
@@ -42,6 +42,6 @@ namespace Northwind.Store.Model
         [InverseProperty("Customer")]
         public virtual ICollection<CustomerCustomerDemo> CustomerCustomerDemo { get; set; }
         [InverseProperty("Customer")]
-        public virtual ICollection<Orders> Orders { get; set; }
+        public virtual ICollection<Order> Orders { get; set; }
     }
 }

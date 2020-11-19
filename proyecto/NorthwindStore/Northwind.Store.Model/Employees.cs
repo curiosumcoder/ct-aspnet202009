@@ -11,7 +11,7 @@ namespace Northwind.Store.Model
         {
             EmployeeTerritories = new HashSet<EmployeeTerritories>();
             InverseReportsToNavigation = new HashSet<Employees>();
-            Orders = new HashSet<Orders>();
+            Orders = new HashSet<Order>();
         }
 
         [Key]
@@ -61,6 +61,6 @@ namespace Northwind.Store.Model
         [InverseProperty(nameof(Employees.ReportsToNavigation))]
         public virtual ICollection<Employees> InverseReportsToNavigation { get; set; }
         [InverseProperty("Employee")]
-        public virtual ICollection<Orders> Orders { get; set; }
+        public virtual ICollection<Order> Orders { get; set; }
     }
 }

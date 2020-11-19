@@ -20,12 +20,15 @@ namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
         private readonly NWContext _context;
         private readonly IRepository<Category, int> _cR;
         private readonly CategoryRepository _cR2;
+        private readonly CategoryD _cD;
 
-        public CategoryController(NWContext context, IRepository<Category, int> cR, CategoryRepository cR2)
+        public CategoryController(NWContext context, IRepository<Category, int> cR, CategoryRepository cR2, CategoryD cD)
         {
             _context = context;
             _cR = cR;
             _cR2 = cR2;
+
+            _cD = cD;
         }
 
         //public IActionResult Index0()
@@ -35,8 +38,8 @@ namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
 
         // GET: Admin/Category
         //[Authorize]
-        public async Task<IActionResult> Index(ViewModels.CategoryIndexViewModel vm)
         //public IActionResult Index(ViewModels.CategoryIndexViewModel vm)
+        public async Task<IActionResult> Index(ViewModels.CategoryIndexViewModel vm)
         {
             await vm.HandleRequest(_cR2);
 
@@ -59,6 +62,7 @@ namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
             //var category = await _context.Categories
             //    .FirstOrDefaultAsync(m => m.CategoryId == id);
             var category = await _cR.Get(id.Value);
+            var category2 = _cD.Read(id.Value);
 
             if (category == null)
             {

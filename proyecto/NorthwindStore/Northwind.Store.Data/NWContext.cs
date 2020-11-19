@@ -27,10 +27,10 @@ namespace Northwind.Store.Data
         public virtual DbSet<EmployeeTerritories> EmployeeTerritories { get; set; }
         public virtual DbSet<Employees> Employees { get; set; }
         public virtual DbSet<Invoices> Invoices { get; set; }
-        public virtual DbSet<OrderDetails> OrderDetails { get; set; }
+        public virtual DbSet<OrderDetail> OrderDetails { get; set; }
         public virtual DbSet<OrderDetailsExtended> OrderDetailsExtended { get; set; }
         public virtual DbSet<OrderSubtotals> OrderSubtotals { get; set; }
-        public virtual DbSet<Orders> Orders { get; set; }
+        public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<OrdersQry> OrdersQry { get; set; }
         public virtual DbSet<ProductSalesFor1997> ProductSalesFor1997 { get; set; }
         public virtual DbSet<Product> Products { get; set; }
@@ -188,7 +188,7 @@ namespace Northwind.Store.Data
                 entity.Property(e => e.CustomerId).IsFixedLength();
             });
 
-            modelBuilder.Entity<OrderDetails>(entity =>
+            modelBuilder.Entity<OrderDetail>(entity =>
             {
                 entity.HasKey(e => new { e.OrderId, e.ProductId })
                     .HasName("PK_Order_Details");
@@ -228,7 +228,7 @@ namespace Northwind.Store.Data
                 entity.ToView("Order Subtotals");
             });
 
-            modelBuilder.Entity<Orders>(entity =>
+            modelBuilder.Entity<Order>(entity =>
             {
                 entity.HasIndex(e => e.CustomerId)
                     .HasName("CustomersOrders");

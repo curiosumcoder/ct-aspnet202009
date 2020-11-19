@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Northwind.Store.Model
 {
     [Table("Order Details")]
-    public partial class OrderDetails
+    public partial class OrderDetail
     {
         [Key]
         [Column("OrderID")]
@@ -20,8 +20,8 @@ namespace Northwind.Store.Model
         public float Discount { get; set; }
 
         [ForeignKey(nameof(OrderId))]
-        [InverseProperty(nameof(Orders.OrderDetails))]
-        public virtual Orders Order { get; set; }
+        [InverseProperty(nameof(Model.Order.OrderDetails))]
+        public virtual Order Order { get; set; }
         [ForeignKey(nameof(ProductId))]
         [InverseProperty(nameof(Model.Product.OrderDetails))]
         public virtual Product Product { get; set; }

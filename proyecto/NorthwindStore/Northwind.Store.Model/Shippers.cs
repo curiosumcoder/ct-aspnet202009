@@ -9,7 +9,7 @@ namespace Northwind.Store.Model
     {
         public Shippers()
         {
-            Orders = new HashSet<Orders>();
+            Orders = new HashSet<Order>();
         }
 
         [Key]
@@ -22,6 +22,6 @@ namespace Northwind.Store.Model
         public string Phone { get; set; }
 
         [InverseProperty("ShipViaNavigation")]
-        public virtual ICollection<Orders> Orders { get; set; }
+        public virtual ICollection<Order> Orders { get; set; }
     }
 }

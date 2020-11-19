@@ -5,11 +5,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Northwind.Store.Model
 {
-    public partial class Orders
+    public partial class Order
     {
-        public Orders()
+        public Order()
         {
-            OrderDetails = new HashSet<OrderDetails>();
+            OrderDetails = new HashSet<OrderDetail>();
         }
 
         [Key]
@@ -52,6 +52,6 @@ namespace Northwind.Store.Model
         [InverseProperty(nameof(Shippers.Orders))]
         public virtual Shippers ShipViaNavigation { get; set; }
         [InverseProperty("Order")]
-        public virtual ICollection<OrderDetails> OrderDetails { get; set; }
+        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
     }
 }

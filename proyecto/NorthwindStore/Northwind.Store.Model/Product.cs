@@ -9,7 +9,7 @@ namespace Northwind.Store.Model
     {
         public Product()
         {
-            OrderDetails = new HashSet<OrderDetails>();
+            OrderDetails = new HashSet<OrderDetail>();
         }
 
         [Key]
@@ -38,6 +38,6 @@ namespace Northwind.Store.Model
         [InverseProperty(nameof(Suppliers.Products))]
         public virtual Suppliers Supplier { get; set; }
         [InverseProperty("Product")]
-        public virtual ICollection<OrderDetails> OrderDetails { get; set; }
+        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
     }
 }

@@ -33,7 +33,18 @@ namespace Northwind.Store.UI.Shell
                         Console.WriteLine($"{o.OrderId}");
                     }
                 }
+
+                //var o = new Model.Order();
+                //var od = new Model.OrderDetail();
+                //o.OrderDetails.Add(od);
+
+                //db.Orders.Add(o);
+                //db.SaveChanges();
             }
+
+
+
+
 
             Console.WriteLine("READY!");
         }
