@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Northwind.Store.Data;
 using Northwind.Store.Model;
 using Northwind.Store.Notification;
+using Northwind.Store.UI.Intranet.Extensions;
 
 namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
 {
@@ -42,6 +43,11 @@ namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
         public async Task<IActionResult> Index(ViewModels.CategoryIndexViewModel vm)
         {
             await vm.HandleRequest(_cR2);
+
+            if (Request.IsAjaxRequest())
+            {
+                return PartialView("IndexTable", vm);
+            }
 
             return View(vm);
 

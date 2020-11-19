@@ -39,35 +39,7 @@
                         <th></th>
                     </tr>
                 </thead>
-                <tbody>
-                    @foreach (var item in Model.Items)
-                    {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.CategoryName)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Description)
-                            </td>
-                            <td>
-                                @*@Html.DisplayFor(modelItem => item.Picture)*@
-                            </td>
-                            <td>
-                                <a asp-action="Edit" asp-route-id="@item.CategoryId">Edit</a> |
-                                <a asp-action="Details" asp-route-id="@item.CategoryId">Details</a> |
-                                <a asp-action="Delete" asp-route-id="@item.CategoryId">Delete</a>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-                <tfoot>
-                    <tr>
-                        @for (int i = 1; i <= Model.Paging.PageCount; i++)
-                        {
-                            <td><button data-page="@i" data-command="paging">@i</button></td>
-                        }
-                    </tr>
-                </tfoot>
+                @{await Html.RenderPartialAsync("IndexTable");}
             </table>
         </div>
     </div>
@@ -79,17 +51,24 @@
 
     (function enableGrid(formId) {
 
+        // Primera forma asin AJAX, usar method='get'
         let commands = document.querySelectorAll(`#${formId} button[data-command]`);
         commands.forEach(c => {
             c.addEventListener('click', function (event) {
                 //event.preventDefault();
-
                 let cm = this.dataset.command;
 
+                const command = document.querySelector(`#${formId} input[name="Command"]`);
+                command.value = cm;
+
                 switch (cm) {
+                    case 'search':
+                        const page1 = document.querySelector(`#${formId} input[name="Paging.Page"]`);
+                        page1.value = 1;
+                        break;
                     case 'paging':
-                        const page = document.querySelector(`#${formId} input[name="Paging.Page"]`);
-                        page.value = this.dataset.page;
+                        const page2 = document.querySelector(`#${formId} input[name="Paging.Page"]`);
+                        page2.value = this.dataset.page;
                         break;
                     case 'order':
                         const sort = document.querySelector(`#${formId} input[name="Paging.Sort"]`);
@@ -104,10 +83,49 @@
                         }
                         break;
                 }
-
-                const command = document.querySelector(`#${formId} input[name="Command"]`);
-                command.value = cm;
             });
+        });
+
+        // Segunda forma con AJAX
+        let form = document.getElementById(formId);
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            let fd = new FormData(form);
+
+            //console.log('submit');
+            //console.log(fd);
+
+            const response = await fetch(window.location.href, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'fetch'
+                },
+                body: fd
+            });
+
+            console.log(response);
+
+            if (response.ok) {
+                let text = await response.text();
+                console.log(text);
+
+                // Actualizar el DOM
+                const tbody = document.querySelector(`#${formId} table > tbody`);
+                tbody.remove();
+                const tfoot = document.querySelector(`#${formId} table > tfoot`);
+                tfoot.remove();
+
+                // Determinar el lugar en donde colocar el resultado
+                const thead = document.querySelector(`#${formId} table > thead`);
+                console.log(thead);
+                thead.insertAdjacentHTML('afterend', text);
+
+                // TODO Enlazar los clic del paginador
+                // TODO Buscar encapsular
+                // TODO Indicador de procesamiento
+                // TODO Habilitar el funcionamiento sin AJAX con GET, o con AJAX con POST
+            }
         });
 
     })('form1');
