@@ -43,9 +43,9 @@ namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
         {
             await vm.HandleRequest(_cR2);
 
-            //vm.Items = await _cR.GetList();
             return View(vm);
 
+            //vm.Items = await _cR.GetList();
             // return View(await _cR.GetList(pf));
             //return View(await _context.Categories.ToListAsync());
         }
