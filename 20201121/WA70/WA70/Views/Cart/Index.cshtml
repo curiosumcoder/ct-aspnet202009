@@ -1,0 +1,27 @@
+﻿@model WA70.ViewModels.CartViewModel
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@TempData[nameof(Product.ProductName)]
+
+@if (Model != null && Model.Items.Any())
+{
+
+    <ul>
+        @foreach (var p in Model.Items)
+        {
+            <li>
+                @p.ProductName, @(p.UnitPrice ?? 0)
+            </li>
+        }
+    </ul>
+    <p>Items Count: <strong>@Model.Count</strong></p>
+    <p>Items Total: <strong>$ @Model.Total</strong></p>
+}
+else
+{
+    <h3>Your cart is empty! :-(</h3>
+}

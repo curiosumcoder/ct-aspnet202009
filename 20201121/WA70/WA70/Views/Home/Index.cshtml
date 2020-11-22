@@ -1,0 +1,20 @@
+﻿@model IEnumerable<Product>
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+@if (Model != null && Model.Any())
+{
+    <ul>
+        @foreach (var p in Model)
+        {
+            <li>
+                <a asp-controller="Cart" asp-action="Add" asp-route-id="@p.ProductId">
+                    @p.ProductName <strong>(+)</strong>
+                </a>
+            </li>
+        }
+    </ul>
+}

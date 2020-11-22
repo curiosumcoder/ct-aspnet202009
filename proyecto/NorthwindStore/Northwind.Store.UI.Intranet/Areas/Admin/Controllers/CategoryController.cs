@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -9,6 +10,7 @@ using Northwind.Store.Data;
 using Northwind.Store.Model;
 using Northwind.Store.Notification;
 using Northwind.Store.UI.Intranet.Extensions;
+using Northwind.Store.UI.Web.Settings;
 
 namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
 {
@@ -22,6 +24,7 @@ namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
         private readonly IRepository<Category, int> _cR;
         private readonly CategoryRepository _cR2;
         private readonly CategoryD _cD;
+        private readonly RequestSettings rs;
 
         public CategoryController(NWContext context, IRepository<Category, int> cR, CategoryRepository cR2, CategoryD cD)
         {
@@ -30,6 +33,8 @@ namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
             _cR2 = cR2;
 
             _cD = cD;
+
+            rs = new RequestSettings(this);
         }
 
         //public IActionResult Index0()
@@ -210,6 +215,11 @@ namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
                 return NotFound();
             }
 
+            if (rs.Message != null)
+            {
+                ViewBag.Message = rs.Message;
+            }
+
             return View(category);
         }
 
@@ -222,7 +232,18 @@ namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
             //_context.Categories.Remove(category);
             //await _context.SaveChangesAsync();
 
-            await _cR.Delete(id);
+            try
+            {
+                await _cR.Delete(id);
+            }
+            catch (Exception ex)
+            {
+                var msg = Messages.General.EXCEPTION;
+                //msg.Description = ex.Message;
+                msg.Description = "Hay datos relacionados con la categoría que desea eliminar. Verifique.";
+                rs.Message = msg;
+                return RedirectToAction("Delete", new { id = id });
+            }
 
             return RedirectToAction(nameof(Index));
         }
