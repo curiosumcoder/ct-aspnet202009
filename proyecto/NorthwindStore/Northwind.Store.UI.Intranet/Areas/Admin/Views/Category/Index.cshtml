@@ -29,13 +29,15 @@
                     <tr>
                         <th>
                             @*@Html.DisplayNameFor(m => m.CategoryName)*@
-                            <button data-sort="CategoryName" data-command="order">CategoryName</button>
-                            <button data-sortDir="asc">⬆</button>
-                            <button data-sortDir="desc">⬇</button>
+                            <button data-sort="CategoryName" data-command="order" class="btn btn-link">Name</button>
+                            <span>
+                                <button data-sortDir="asc" class="btn btn-link" style="display: inline;"><i class="fa fa-fw fa-sort-asc"></i></button>
+                                <button data-sortDir="desc" class="btn btn-link" style="display: inline;"><i class="fa fa-fw fa-sort-desc"></i></button>
+                            </span>                            
                         </th>
                         <th>
                             @*@Html.DisplayNameFor(model => model.Description)*@
-                            <button data-sort="Description" data-command="order">Description</button>
+                            <button data-sort="Description" data-command="order" class="btn btn-link">Description</button>
                         </th>
                         <th>
                             @*@Html.DisplayNameFor(model => model.Picture)*@
@@ -52,6 +54,15 @@
 
 @Model.Paging.Count
 
+<style>
+    th::before {
+        content: "A";
+        right: 1em;
+    }
+    th::after {
+        content: "A";
+    }
+</style>
 <script>
     (function enableGrid(main, params, ajax = false, el = '', process = '') {
 
@@ -127,11 +138,12 @@
             });
         }
 
-        // TODO Normalizar nombres de parámetros
+        // TODO 
+        // Iconos para ordenamiento
+        // Normalizar nombres de parámetros
         // Deshabilitar interacción
-        // Personalizar indicador de proqueso
+        // Personalizar indicador de progreso
         // Agregar animación en la presentación de resultados
-        // Inicializar la página al buscar
     })('#form1', ['command', 'page', 'sort', 'sortdir'], true, '#result', '#processing');
 </script>
 
