@@ -236,7 +236,7 @@ namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
             {
                 await _cR.Delete(id);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 var msg = Messages.General.EXCEPTION;
                 //msg.Description = ex.Message;

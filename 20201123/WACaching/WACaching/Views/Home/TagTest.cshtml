@@ -1,0 +1,102 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor hca
+@{
+    ViewData["Title"] = "TagTest";
+}
+
+<h1>TagTest</h1>
+
+<div class="d-flex flex-row bd-highlight mb-3">
+    <div class="p-2 bd-highlight">
+        <dl>
+            <dt>Default 20 minutes</dt>
+            <dd><cache>@DateTime.Now</cache></dd>
+            <dt>Enabled</dt>
+            <dd><cache enabled="false">@DateTime.Now</cache></dd>
+            <dt>
+                Expires On:
+                @{
+                    var expire = new DateTime(2020, 11, 23, 17, 31, 0);
+                }
+                @expire
+            </dt>
+            <dd>
+                <cache expires-on="@expire">
+                    @DateTime.Now
+                </cache>
+            </dd>
+            <dt>
+                Expires After (seconds):
+                @{
+                    var seconds = 5;
+                }
+                @seconds
+            </dt>
+            <dd>
+                <cache expires-after="@TimeSpan.FromSeconds(seconds)">
+                    @DateTime.Now
+                </cache>
+            </dd>
+            <dt>
+                Expires Sliding (seconds):
+                @{
+                    var secondsSliding = 5;
+                }
+                @secondsSliding
+            </dt>
+            <dd>
+                <cache expires-sliding="@TimeSpan.FromSeconds(secondsSliding)">
+                    @DateTime.Now
+                </cache>
+            </dd>
+        </dl>
+    </div>
+    <div class="p-2 bd-highlight">
+        <dl>
+            <dt>Vary By Header</dt>
+            <dd>User-Agent, User-Agent,content-encoding</dd>
+            <dt>
+                Vary By Query:
+                @foreach (var item in hca.HttpContext.Request.Query)
+                {
+                    <p>@item.Key = @item.Value</p>
+                }
+            </dt>
+            <dd>
+                <cache vary-by-query="filter">
+                    @DateTime.Now
+                </cache>
+            </dd>
+            <dt>Vary By Route</dt>
+            <dd>
+                <cache vary-by-route="id">
+                    @DateTime.Now
+                </cache>
+            </dd>
+            <dt>Vary By Cookie</dt>
+            <dd>.AspNetCore.Identity.Application, .AspNetCore.Identity.Application</dd>
+            <dt>Vary By User</dt>
+            <dd>
+                <cache vary-by-user="true">
+                    @DateTime.Now
+                </cache>
+            </dd>
+            <dt>Vary By: @ViewBag.varyValue</dt>
+            <dd>
+                <cache vary-by="@ViewBag.varyValue">
+                    @DateTime.Now
+                </cache>
+            </dd>
+        </dl>
+    </div>
+    <div class="p-2 bd-highlight">
+        <dl>
+            <dt>Priority: High, Low, NeverRemove, Normal</dt>
+            <dd>
+                <cache priority="Microsoft.Extensions.Caching.Memory.CacheItemPriority.High">
+                    @DateTime.Now
+                </cache>
+            </dd>
+        </dl>
+    </div>
+</div>

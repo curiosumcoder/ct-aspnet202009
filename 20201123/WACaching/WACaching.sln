@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29519.87
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WACaching", "WACaching\WACaching.csproj", "{523C0F2E-59F3-43D7-A742-30FEA627591C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{523C0F2E-59F3-43D7-A742-30FEA627591C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{523C0F2E-59F3-43D7-A742-30FEA627591C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{523C0F2E-59F3-43D7-A742-30FEA627591C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{523C0F2E-59F3-43D7-A742-30FEA627591C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D95C566A-30EA-4D9F-A52A-9792EE53AEA3}
+	EndGlobalSection
+EndGlobal
