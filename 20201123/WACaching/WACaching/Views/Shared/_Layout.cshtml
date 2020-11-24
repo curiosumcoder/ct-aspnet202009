@@ -16,6 +16,8 @@
             <li><a asp-area="" asp-controller="Home" asp-action="GetDependentEntries">Dependent cache entries</a></li>
             <li><a asp-area="" asp-controller="Home" asp-action="TagTest">Cache Tag Helper</a></li>
             <li><a asp-area="" asp-controller="Home" asp-action="Privacy">Response Cache</a></li>
+            <li><a asp-area="" asp-controller="Home" asp-action="Privacy" asp-route-param1="1" asp-route-v="@(new Random().Next(1, 5))">Response Cache: param1=1</a></li>
+            <li><a asp-area="" asp-controller="Home" asp-action="Privacy" asp-route-param1="2">Response Cache: param1=2</a></li>
         </ul>
     </div>
     @RenderBody()

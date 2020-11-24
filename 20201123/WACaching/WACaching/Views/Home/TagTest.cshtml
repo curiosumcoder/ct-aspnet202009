@@ -11,12 +11,13 @@
         <dl>
             <dt>Default 20 minutes</dt>
             <dd><cache>@DateTime.Now</cache></dd>
+            @*<distributed-cache></distributed-cache>*@
             <dt>Enabled</dt>
             <dd><cache enabled="false">@DateTime.Now</cache></dd>
             <dt>
                 Expires On:
                 @{
-                    var expire = new DateTime(2020, 11, 23, 17, 31, 0);
+                    var expire = new DateTime(2020, 11, 23, 19, 38, 0);
                 }
                 @expire
             </dt>
@@ -100,3 +101,5 @@
         </dl>
     </div>
 </div>
+@*<cache>
+</cache>*@

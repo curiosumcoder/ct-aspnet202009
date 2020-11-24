@@ -25,24 +25,25 @@ namespace WACaching
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMemoryCache();    
+            // services.AddDistributedMemoryCache();
+            services.AddMemoryCache();
             services.AddHttpContextAccessor();
             
             services.AddResponseCaching();
 
-            var mvc = services.AddControllersWithViews();
-            //services.AddControllersWithViews(options =>
-            //{
-            //    options.CacheProfiles.Add("Basic", new CacheProfile()
-            //    {
-            //        Duration = 10
-            //    });
-            //    options.CacheProfiles.Add("NoCaching", new CacheProfile()
-            //    {
-            //        NoStore = true,
-            //        Location = ResponseCacheLocation.None
-            //    });
-            //});
+            //var mvc = services.AddControllersWithViews();
+            var mvc = services.AddControllersWithViews(options =>
+            {
+                options.CacheProfiles.Add("Basic", new CacheProfile()
+                {
+                    Duration = 10 
+                });
+                options.CacheProfiles.Add("NoCaching", new CacheProfile()
+                {
+                    NoStore = true,
+                    Location = ResponseCacheLocation.None
+                });
+            });
 
             mvc.AddRazorRuntimeCompilation();
         }

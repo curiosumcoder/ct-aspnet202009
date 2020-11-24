@@ -7,6 +7,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace WACaching.Controllers
 {
+    //[ResponseCache(CacheProfileName = "Basic")]
     public class HomeController : Controller
     {
         private IMemoryCache _cache;
@@ -33,11 +34,13 @@ namespace WACaching.Controllers
 
                 // Set cache options.
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    // Keep in cache for this time, reset time if accessed.                    
-                    .SetSlidingExpiration(TimeSpan.FromSeconds(3));
+                    // Keep in cache for this time, reset time if accessed.
+                    .SetAbsoluteExpiration(TimeSpan.FromSeconds(10));
+                    //.SetSlidingExpiration(TimeSpan.FromSeconds(3));
 
                 // Save data in cache.
-                _cache.Set(CacheKeys.Entry, cacheEntry, cacheEntryOptions);                
+                _cache.Set(CacheKeys.Entry, cacheEntry, cacheEntryOptions);
+                //_cache.Set(CacheKeys.Entry, cacheEntry);
             }
 
             return View("Cache", cacheEntry);
@@ -202,8 +205,8 @@ namespace WACaching.Controllers
             return View();
         }
 
-        //[ResponseCache(Duration = 10)]
-        //[ResponseCache(CacheProfileName = "Basic")]
+        //[ResponseCache(Duration = 10, Location = ResponseCacheLocation.Client, VaryByQueryKeys = new string[] {"param1"})]
+        [ResponseCache(CacheProfileName = "Basic")]
         public IActionResult Privacy()
         {
             return View();
