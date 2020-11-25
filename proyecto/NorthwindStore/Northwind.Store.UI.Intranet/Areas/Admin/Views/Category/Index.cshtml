@@ -29,15 +29,23 @@
                     <tr>
                         <th>
                             @*@Html.DisplayNameFor(m => m.CategoryName)*@
-                            <button data-sort="CategoryName" data-command="order" class="btn btn-link">Name</button>
-                            <span>
-                                <button data-sortDir="asc" class="btn btn-link" style="display: inline;"><i class="fa fa-fw fa-sort-asc"></i></button>
-                                <button data-sortDir="desc" class="btn btn-link" style="display: inline;"><i class="fa fa-fw fa-sort-desc"></i></button>
-                            </span>                            
+                            Name
+                            <button data-sort="CategoryName" data-command="order" data-sortDir="asc" class="btn btn-link btn-sm">
+                                <svg class="bi-asc" width="18" height="18"></svg>
+                            </button>
+                            <button data-sort="CategoryName" data-command="order" data-sortDir="desc" class="btn btn-link btn-sm">
+                                <svg class="bi-desc" width="18" height="18"></svg>
+                            </button>
                         </th>
                         <th>
                             @*@Html.DisplayNameFor(model => model.Description)*@
-                            <button data-sort="Description" data-command="order" class="btn btn-link">Description</button>
+                            Description
+                            <button data-sort="Description" data-command="order" data-sortDir="asc" class="btn btn-link btn-sm">
+                                <svg class="bi-asc" width="18" height="18"></svg>
+                            </button>
+                            <button data-sort="Description" data-command="order" data-sortDir="desc" class="btn btn-link btn-sm">
+                                <svg class="bi-desc" width="18" height="18"></svg>
+                            </button>
                         </th>
                         <th>
                             @*@Html.DisplayNameFor(model => model.Picture)*@
@@ -52,17 +60,6 @@
     </div>
 </form>
 
-@Model.Paging.Count
-
-<style>
-    th::before {
-        content: "A";
-        right: 1em;
-    }
-    th::after {
-        content: "A";
-    }
-</style>
 <script>
     (function enableGrid(main, params, ajax = false, el = '', process = '') {
 
@@ -81,7 +78,19 @@
                         let value = this.dataset[p];
                         //console.log(value);
 
-                        let input = document.querySelector(`${main} input[id="${p}"]`);
+                        // Limpiar las clases en las acciones existentes
+                        let newClass = `${p}-${value}`;
+                        let currentActions = document.querySelectorAll(`[class*=${p}]`);
+                        currentActions.forEach(a => {
+                            a.classList.forEach(c => {
+                                if (c.startsWith(p)) {
+                                    a.classList.remove(c);
+                                }
+                            });
+                        });
+                        this.classList.add(newClass); // Agregar la clase al elemento
+
+                        let input = document.querySelector(`${main} input[id=${p}]`);
                         //console.log(input);
 
                         input.value = value;
@@ -138,7 +147,7 @@
             });
         }
 
-        // TODO 
+        // TODO
         // Iconos para ordenamiento
         // Normalizar nombres de parámetros
         // Deshabilitar interacción
@@ -151,4 +160,29 @@
     .processing:before {
         content: attr(data-message);
     }
+
+    .bi-asc {
+        display: inline-block;
+        content: "";
+        background-image: url('data:image/svg+xml;charset=utf-8,<svg width="1em" height="1em" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M7.247 4.86l-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/> </svg>');
+        background-repeat: no-repeat;
+        background-size: 1rem 1rem;
+    }
+
+    .bi-desc {
+        display: inline-block;
+        content: "";
+        background-image: url('data:image/svg+xml;charset=utf-8,<svg width="1em" height="1em" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/> </svg>');
+        background-repeat: no-repeat;
+        background-size: 1rem 1rem;
+    }
+
+    .sortdir-asc svg, .sortdir-desc svg {
+        border: 1px solid gray;
+        border-radius: 2px;
+    }
+
+    /*[data-sortDir]:not(.sortdir-asc) {
+        opacity: 0.4;
+    }*/
 </style>

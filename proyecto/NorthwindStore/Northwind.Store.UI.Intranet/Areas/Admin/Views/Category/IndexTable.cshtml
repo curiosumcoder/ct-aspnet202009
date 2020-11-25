@@ -21,7 +21,7 @@
 </tbody>
 <tfoot id="result">
     <tr>
-        <td colspan="4">
+        <td colspan="3">
             <ul class="pagination">
                 @for (int i = 1; i <= Model.Paging.PageCount; i++)
                 {
@@ -29,5 +29,6 @@
                 }
             </ul>
         </td>
+        <td>Resultados: @Model.Paging.Count</td>
     </tr>
 </tfoot>
