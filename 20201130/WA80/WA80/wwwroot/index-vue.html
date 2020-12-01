@@ -15,9 +15,11 @@
             <button class="btn btn-primary">Search</button>
         </form>
         <hr />
-        <ul>
-            <li v-for="p in products">{{p.productName}}</li>
-        </ul>
+        <table class="table table-bordered table-striped">
+            <tbody>
+                <tr v-for="p in products"><td>{{p.productName}}</td><td>{{p.unitPrice}}</td></tr>
+            </tbody>
+        </table>
     </div>
 
     <script>
