@@ -11,6 +11,7 @@ using Northwind.Store.Model;
 using Northwind.Store.Notification;
 using Northwind.Store.UI.Intranet.Extensions;
 using Northwind.Store.UI.Web.Settings;
+using System.Security.Cryptography;
 
 namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
 {
@@ -253,6 +254,12 @@ namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
             return _context.Categories.Any(e => e.CategoryId == id);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [ResponseCache(Duration = 60*5)]
         public async Task<FileStreamResult> ReadImage(int id)
         {
             FileStreamResult result = null;
@@ -270,6 +277,10 @@ namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
             //}
 
             var file = await ((CategoryRepository)_cR).GetFileStream(id);
+
+            byte[] bytes = MD5.Create().ComputeHash(file.ToArray());
+            var md5Hash = BitConverter.ToString(bytes).Replace("-", string.Empty).ToLower();
+
             if (file != null)
             {
                 result = File(file, "image/jpg");

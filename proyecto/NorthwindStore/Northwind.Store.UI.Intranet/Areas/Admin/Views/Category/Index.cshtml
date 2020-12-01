@@ -29,13 +29,21 @@
                     <tr>
                         <th>
                             @*@Html.DisplayNameFor(m => m.CategoryName)*@
-                            Name
-                            <button data-sort="CategoryName" data-command="order" data-sortDir="asc" class="btn btn-link btn-sm">
-                                <svg class="bi-asc" width="18" height="18"></svg>
-                            </button>
-                            <button data-sort="CategoryName" data-command="order" data-sortDir="desc" class="btn btn-link btn-sm">
-                                <svg class="bi-desc" width="18" height="18"></svg>
-                            </button>
+                            <div class="order-section">
+                                <span class="order-section-title">Name</span>
+                                <span class="btn-sort-asc">
+                                    <button data-sort="CategoryName" data-command="order" data-sortDir="asc" class="btn btn-link btn-sm btn-sort-asc">
+                                        <svg class="bi-asc" height="10" ></svg>
+                                    </button>
+                                </span>
+                                <span class="btn-sort-desc">ABC</span>
+                                @*<button data-sort="CategoryName" data-command="order" data-sortDir="asc" class="btn btn-link btn-sm btn-sort-asc">
+                                        <svg class="bi-asc" width="10" height="10"></svg>
+                                    </button>
+                                    <button data-sort="CategoryName" data-command="order" data-sortDir="desc" class="btn btn-link btn-sm btn-sort-desc">
+                                        <svg class="bi-desc" width="10" height="10"></svg>
+                                    </button>*@
+                            </div>
                         </th>
                         <th>
                             @*@Html.DisplayNameFor(model => model.Description)*@
@@ -164,9 +172,8 @@
     .bi-asc {
         display: inline-block;
         content: "";
-        background-image: url('data:image/svg+xml;charset=utf-8,<svg width="1em" height="1em" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M7.247 4.86l-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/> </svg>');
+        background-image: url('data:image/svg+xml;charset=utf-8,<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M7.247 4.86l-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/> </svg>');
         background-repeat: no-repeat;
-        background-size: 1rem 1rem;
     }
 
     .bi-desc {
@@ -185,4 +192,28 @@
     /*[data-sortDir]:not(.sortdir-asc) {
         opacity: 0.4;
     }*/
+
+    .order-section {
+        display: grid;
+        grid-template-columns: auto 0.25fr;
+        grid-template-rows: auto auto;
+    }
+
+    .order-section-title {
+        grid-row-start: 1;
+        background-color: red;
+        grid-row-end: span 2;
+    }
+
+    .btn-sort-asc {
+        grid-column-start: 2;
+        grid-row-start: 1;
+        background-color: green;
+    }
+
+    .btn-sort-desc {
+        grid-column-start: 2;
+        grid-row-start: 2;
+        background-color: blue;
+    }
 </style>
