@@ -4,22 +4,42 @@
     <meta charset="utf-8" />
     <title></title>
     <link href="lib/twitter-bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <script src="lib/jquery/jquery.js"></script>
+    <script src="lib/twitter-bootstrap/js/bootstrap.js"></script>
     <script src="lib/vue/vue.global.js"></script>
 </head>
 <body>
     <div id="app" class="container">
-        <form @submit.prevent="search">
-            <h1>Products</h1>
-            <hr />
-            <input v-model="filter" class="form-control" />
-            <button class="btn btn-primary">Search</button>
-        </form>
+        <h1>Products</h1>
         <hr />
-        <table class="table table-bordered table-striped">
-            <tbody>
-                <tr v-for="p in products"><td>{{p.productName}}</td><td>{{p.unitPrice}}</td></tr>
-            </tbody>
-        </table>
+        <div class="row">
+            <div class="col">
+                <form @submit.prevent="search">
+                    <div class="form-row">
+                        <div class="col"><input v-model="filter" class="form-control form-control-sm" /></div>
+                        <div class="col"><button class="btn btn-primary btn-sm">Search</button></div>
+                    </div>
+                </form>
+                <br />
+                <table class="table table-bordered table-striped table-sm">
+                    <tbody>
+                        <tr v-for="p in products"><td><a href="#" @click="edit(p.productId)">{{p.productId}}</a></td><td>{{p.productName}}</td><td>{{p.unitPrice}}</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col" v-if="product">
+                <div class="alert alert-primary">{{state}}</div>
+                <form @submit.prevent="save">
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Name</label>
+                        <div class="col-sm-10">
+                            <input v-model="product.productName" class="form-control form-control-sm" />
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-sm">Save</button>
+                </form>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -32,7 +52,9 @@
             const app = Vue.createApp({
                 data() {
                     return {
+                        state: '',
                         filter: '',
+                        product: null,
                         products: []
                     }
                 },
@@ -49,6 +71,39 @@
                                 console.log(data);
                                 this.products = data;
                             }
+                        }
+                    },
+                    async edit(id) {
+                        console.log(`Detail ... ${id}`);
+
+                        const response = await fetch(`api/Product/${id}`);
+
+                        if (response.ok) {
+                            let data = await response.json();
+
+                            if (data) {
+                                console.log(data);
+                                this.product = data;
+                                this.state = 'EDIT';
+                            }
+                        }
+                    },
+                    async save() {
+                        console.log(`Saving ... ${this.product.productName}`);
+
+                        switch (this.state) {
+                            case 'EDIT':
+                                const response = await fetch(`api/Product/${this.product.productId}`,
+                                    {
+                                        method: 'put',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify(this.product)
+                                    });
+
+                                if (response.ok) {
+                                    alert('¡La operación fué satisfactoria!');
+                                }
+                                break;
                         }
                     }
                 }
