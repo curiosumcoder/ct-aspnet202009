@@ -8,14 +8,15 @@
 </head>
 <body>
     <div id="app" class="container">
-        <h1>Products</h1>
+        <form @submit.prevent="search">
+            <h1>Products</h1>
+            <hr />
+            <input v-model="filter" class="form-control" />
+            <button class="btn btn-primary">Search</button>
+        </form>
         <hr />
-        <input v-model="filter" class="form-control" />
-        <button @click="search" class="btn btn-primary">Search</button>
-        <hr />
-
         <ul>
-            <li v-for="p in products">{{p.productName}}</li>        
+            <li v-for="p in products">{{p.productName}}</li>
         </ul>
     </div>
 
@@ -33,7 +34,7 @@
                         products: []
                     }
                 },
-                methods: {    
+                methods: {
                     async search() {
                         console.log(`Searching ... ${this.filter}`);
 
