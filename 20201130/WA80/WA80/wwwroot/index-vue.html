@@ -3,8 +3,56 @@
 <head>
     <meta charset="utf-8" />
     <title></title>
+    <link href="lib/twitter-bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <script src="lib/vue/vue.global.js"></script>
 </head>
 <body>
+    <div id="app" class="container">
+        <h1>Products</h1>
+        <hr />
+        <input v-model="filter" class="form-control" />
+        <button @click="search" class="btn btn-primary">Search</button>
+        <hr />
 
+        <ul>
+            <li v-for="p in products">{{p.productName}}</li>        
+        </ul>
+    </div>
+
+    <script>
+        let vm = null;
+
+        document.addEventListener('DOMContentLoaded', function (event) {
+            console.log('DOM fully loaded and parsed');
+
+            // Creación de la instancia de Vuejs
+            const app = Vue.createApp({
+                data() {
+                    return {
+                        filter: '',
+                        products: []
+                    }
+                },
+                methods: {    
+                    async search() {
+                        console.log(`Searching ... ${this.filter}`);
+
+                        const response = await fetch(`api/Product/Search/${this.filter}`);
+
+                        if (response.ok) {
+                            let data = await response.json();
+
+                            if (data) {
+                                console.log(data);
+                                this.products = data;
+                            }
+                        }
+                    }
+                }
+            });
+
+            vm = app.mount('#app');
+        });
+    </script>
 </body>
 </html>
