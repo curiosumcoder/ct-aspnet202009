@@ -10,35 +10,42 @@
 </head>
 <body>
     <div id="app" class="container">
-        <h1>Products</h1>
+        <h4>Products</h4>
+        <div class="alert alert-info">{{state}}</div>
         <hr />
-        <div class="row">
-            <div class="col">
-                <form @submit.prevent="search">
-                    <div class="form-row">
-                        <div class="col"><input v-model="filter" class="form-control form-control-sm" /></div>
-                        <div class="col"><button class="btn btn-primary btn-sm">Search</button></div>
-                    </div>
-                </form>
-                <br />
-                <table class="table table-bordered table-striped table-sm">
-                    <tbody>
-                        <tr v-for="p in products"><td><a href="#" @click="edit(p.productId)">{{p.productId}}</a></td><td>{{p.productName}}</td><td>{{p.unitPrice}}</td></tr>
-                    </tbody>
-                </table>
+        <div v-if="state === 'search'">
+            <div class="form-group">
+                <button class="btn btn-primary btn-sm" @click="create">Create</button>
             </div>
-            <div class="col" v-if="product">
-                <div class="alert alert-primary">{{state}}</div>
-                <form @submit.prevent="save">
-                    <div class="form-group row">
-                        <label class="col-sm-2 col-form-label">Name</label>
-                        <div class="col-sm-10">
-                            <input v-model="product.productName" class="form-control form-control-sm" />
-                        </div>
+            <form @submit.prevent="search">
+                <div class="form-row">
+                    <div class="col"><input v-model="filter" class="form-control form-control-sm" /></div>
+                    <div class="col"><button class="btn btn-primary btn-sm">Search</button></div>
+                </div>
+            </form>
+            <br />
+            <table class="table table-bordered table-striped table-sm">
+                <tbody>
+                    <tr v-for="p in products"><td><a href="#" @click="edit(p.productId)">{{p.productId}}</a></td><td>{{p.productName}}</td><td>{{p.unitPrice}}</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div v-if="(state === 'create' || state === 'edit') && product">
+            <form @submit.prevent="save">
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Name</label>
+                    <div class="col-sm-10">
+                        <input required class="form-control form-control-sm" v-model="product.productName" />
                     </div>
-                    <button class="btn btn-primary btn-sm">Save</button>
-                </form>
-            </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Unit Price</label>
+                    <div class="col-sm-10">
+                        <input type="number" step="any" required class="form-control form-control-sm" v-model.number="product.unitPrice"/>
+                    </div>
+                </div>
+                <button class="btn btn-primary btn-sm">Save</button>
+            </form>
         </div>
     </div>
 
@@ -52,7 +59,7 @@
             const app = Vue.createApp({
                 data() {
                     return {
-                        state: '',
+                        state: 'search',
                         filter: '',
                         product: null,
                         products: []
@@ -73,8 +80,13 @@
                             }
                         }
                     },
+                    create() {
+                        console.log('Create ...');
+                        this.state = 'create';
+                        this.product = { unitPrice: Number };
+                    },
                     async edit(id) {
-                        console.log(`Detail ... ${id}`);
+                        console.log(`Edit ... ${id}`);
 
                         const response = await fetch(`api/Product/${id}`);
 
@@ -84,7 +96,7 @@
                             if (data) {
                                 console.log(data);
                                 this.product = data;
-                                this.state = 'EDIT';
+                                this.state = 'edit';
                             }
                         }
                     },
@@ -92,16 +104,31 @@
                         console.log(`Saving ... ${this.product.productName}`);
 
                         switch (this.state) {
-                            case 'EDIT':
-                                const response = await fetch(`api/Product/${this.product.productId}`,
+                            case 'create':
+                                console.log(this.product);
+                                let postResponse = await fetch('api/Product',
+                                    {
+                                        method: 'post',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify(this.product)
+                                    });
+
+                                if (postResponse.ok) {
+                                    alert('¡La operación fué satisfactoria!');
+                                    //this.state = 'search';
+                                }
+                                break;
+                            case 'edit':
+                                let putResponse = await fetch(`api/Product/${this.product.productId}`,
                                     {
                                         method: 'put',
                                         headers: { 'Content-Type': 'application/json' },
                                         body: JSON.stringify(this.product)
                                     });
 
-                                if (response.ok) {
+                                if (putResponse.ok) {
                                     alert('¡La operación fué satisfactoria!');
+                                    //this.state = 'search';
                                 }
                                 break;
                         }
