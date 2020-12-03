@@ -23,6 +23,8 @@ namespace WA80.Controllers
 
         // GET: api/Product
         [HttpGet]
+        //[AcceptVerbs("LINK")]
+        //[AcceptVerbs("LOCK")]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
         {
             return await _context.Products.ToListAsync();

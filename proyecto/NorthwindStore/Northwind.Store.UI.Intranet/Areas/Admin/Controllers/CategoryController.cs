@@ -278,8 +278,8 @@ namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
 
             var file = await ((CategoryRepository)_cR).GetFileStream(id);
 
-            byte[] bytes = MD5.Create().ComputeHash(file.ToArray());
-            var md5Hash = BitConverter.ToString(bytes).Replace("-", string.Empty).ToLower();
+            //byte[] bytes = MD5.Create().ComputeHash(file.ToArray());
+            //var md5Hash = BitConverter.ToString(bytes).Replace("-", string.Empty).ToLower();
 
             if (file != null)
             {

@@ -3,11 +3,8 @@ Microsoft.EntityFrameworkCore
 Microsoft.EntityFrameworkCore.SqlServer
 Microsoft.EntityFrameworkCore.Proxies
 
-
 dotnet-aspnet-codegenerator controller -name ProductController -async -api -m Northwind.Store.Model.Product -dc Northwind.Store.Data.NWContext -outDir Controllers
 
 Microsoft.VisualStudio.Web.CodeGeneration.Design
 Microsoft.VisualStudio.Web.CodeGeneration.Utils
-
-
 Microsoft.EntityFrameworkCore.Design
