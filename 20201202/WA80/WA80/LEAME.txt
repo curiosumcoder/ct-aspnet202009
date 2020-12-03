@@ -1,0 +1,24 @@
+﻿----------------------------------------------------------------------------------------------------------------------------
+REST (Web API)
+
+-- Usar version 3.*
+Microsoft.EntityFrameworkCore 
+Microsoft.EntityFrameworkCore.SqlServer
+Microsoft.EntityFrameworkCore.Proxies
+
+dotnet-aspnet-codegenerator controller -name ProductController -async -api -m Northwind.Store.Model.Product -dc Northwind.Store.Data.NWContext -outDir Controllers
+
+Microsoft.VisualStudio.Web.CodeGeneration.Design
+Microsoft.VisualStudio.Web.CodeGeneration.Utils
+Microsoft.EntityFrameworkCore.Design
+
+----------------------------------------------------------------------------------------------------------------------------
+OpenAPI
+https://docs.microsoft.com/en-us/aspnet/core/tutorials/web-api-help-pages-using-swagger?view=aspnetcore-5.0
+
+Web API analyzers
+https://docs.microsoft.com/en-us/aspnet/core/web-api/advanced/analyzers?view=aspnetcore-5.0&tabs=visual-studio
+
+Para probar
+https://localhost:44374/swagger/v1/swagger.json
+https://localhost:44374/swagger

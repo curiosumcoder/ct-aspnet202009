@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
+</head>
+<body>
+    <button id="test">TEST</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function (event) {
+            console.log('DOM fully loaded and parsed');
+
+            let test = document.getElementById('test');
+            if (test) {
+                test.addEventListener('click', async function (event) {
+                    let response = await fetch('WeatherForecast');
+                    if (response.ok) {
+                        let data = await response.json();
+
+                        if (data) {
+                            console.log(data);
+
+                            let newHTML = '<ul>';
+                            data.forEach(d => {
+                                newHTML += `<li>${d.date} ${d.summary} ${d.temperatureC}</li>`;
+                            });
+                            newHTML += '</ul>';
+
+                            test.insertAdjacentHTML('afterend', newHTML);
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

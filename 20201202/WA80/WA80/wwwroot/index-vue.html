@@ -1,0 +1,188 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
+    <link href="lib/twitter-bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <script src="lib/jquery/jquery.js"></script>
+    <script src="lib/twitter-bootstrap/js/bootstrap.js"></script>
+    <script src="lib/vue/vue.global.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand" href="/index-vue.html">
+            <svg class="bi" width="32" height="32" fill="currentColor">
+                <use xlink:href="lib/bootstrap-icons/bootstrap-icons.svg#house" />
+            </svg>
+        </a>
+        <span class="nav-item">
+            <a class="nav-link" href="#">
+                <svg class="bi" width="32" height="32" fill="currentColor">
+                    <use xlink:href="lib/bootstrap-icons/bootstrap-icons.svg#cart" />
+                </svg>
+            </a>
+        </span>
+    </nav>
+    <div id="app" class="container">
+        <h4>Products</h4>
+        <!--<div class="alert alert-info">{{state}}</div>-->
+        <hr />
+        <!--Vista de búsqueda-->
+        <div v-if="state === 'search'">
+            <div class="form-group">
+                <button class="btn btn-primary btn-sm" @click="create">Create</button>
+            </div>
+            <form @submit.prevent="search">
+                <div class="form-row">
+                    <div class="col"><input v-model="filter" class="form-control form-control-sm" /></div>
+                    <div class="col"><button class="btn btn-primary btn-sm">Search</button></div>
+                </div>
+            </form>
+            <br />
+            <table class="table table-bordered table-striped table-sm" v-if="products.length > 0">
+                <thead><tr><th>Id</th><th>Name</th><th>Price</th><th></th></tr></thead>
+                <tbody>
+                    <tr v-for="p in products">
+                        <td><a href="#" @click="edit(p.productId)">{{p.productId}}</a></td>
+                        <td>{{p.productName}}</td>
+                        <td>{{p.unitPrice}}</td>
+                        <td>
+                            <a href="#" @click="deleteProduct(p.productId)">
+                                <svg class="bi text-danger" width="16" height="16" fill="currentColor">
+                                    <use xlink:href="lib/bootstrap-icons/bootstrap-icons.svg#dash-circle" />
+                                </svg>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!--Vista de creación/edición-->
+        <div v-if="(state === 'create' || state === 'edit') && product">
+            <form @submit.prevent="save">
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Name</label>
+                    <div class="col-sm-10">
+                        <input required class="form-control form-control-sm" v-model="product.productName" />
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Unit Price</label>
+                    <div class="col-sm-10">
+                        <input type="number" step="any" required class="form-control form-control-sm" v-model.number="product.unitPrice" />
+                    </div>
+                </div>
+                <button class="btn btn-primary btn-sm">Save</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let vm = null;
+
+        // SPA = Single Page Application
+
+        document.addEventListener('DOMContentLoaded', function (event) {
+            console.log('DOM fully loaded and parsed');
+
+            // Creación de la instancia de Vuejs
+            const app = Vue.createApp({
+                data() {
+                    return {
+                        state: 'search',
+                        filter: '',
+                        product: null,
+                        products: []
+                    }
+                },
+                methods: {
+                    async search() {
+                        console.log(`Searching ... ${this.filter}`);
+
+                        const response = await fetch(`api/Product/Search/${this.filter}`);
+
+                        if (response.ok) {
+                            let data = await response.json();
+
+                            if (data) {
+                                console.log(data);
+                                this.products = data;
+                            }
+                        }
+                    },
+                    create() {
+                        console.log('Create ...');
+                        this.state = 'create';
+                        this.product = { unitPrice: Number };
+                    },
+                    async edit(id) {
+                        console.log(`Edit ... ${id}`);
+
+                        const response = await fetch(`api/Product/${id}`);
+
+                        if (response.ok) {
+                            let data = await response.json();
+
+                            if (data) {
+                                console.log(data);
+                                this.product = data;
+                                this.state = 'edit';
+                            }
+                        }
+                    },
+                    async save() {
+                        console.log(`Saving ... ${this.product.productName}`);
+
+                        switch (this.state) {
+                            case 'create':
+                                console.log(this.product);
+                                let postResponse = await fetch('api/Product',
+                                    {
+                                        method: 'post',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify(this.product)
+                                    });
+
+                                if (postResponse.ok) {
+                                    alert('¡La operación fué satisfactoria!');
+                                    this.state = 'search';
+                                }
+                                break;
+                            case 'edit':
+                                let putResponse = await fetch(`api/Product/${this.product.productId}`,
+                                    {
+                                        method: 'put',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify(this.product)
+                                    });
+
+                                if (putResponse.ok) {
+                                    alert('¡La operación fué satisfactoria!');
+                                    this.state = 'search';
+                                }
+                                break;
+                        }
+                    },
+                    async deleteProduct(id) {
+                        console.log(`Delete ... ${id}`);
+
+                        if (confirm('Are you sure?')) {
+                            const response = await fetch(`api/Product/${id}`,
+                                {
+                                    method: 'delete'
+                                });
+
+                            if (response.ok) {
+                                alert('¡La operación fué satisfactoria!');
+                            }
+                        }
+                    }
+                }
+            });
+
+            vm = app.mount('#app');
+        });
+    </script>
+</body>
+</html>
