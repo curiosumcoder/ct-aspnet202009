@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -34,6 +33,7 @@ namespace Northwind.Store.Model
         [ForeignKey(nameof(CategoryId))]
         [InverseProperty(nameof(Model.Category.Products))]
         public virtual Category Category { get; set; }
+
         [ForeignKey(nameof(SupplierId))]
         [InverseProperty(nameof(Suppliers.Products))]
         public virtual Suppliers Supplier { get; set; }

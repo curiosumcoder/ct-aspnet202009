@@ -16,9 +16,15 @@ Microsoft.EntityFrameworkCore.Design
 OpenAPI
 https://docs.microsoft.com/en-us/aspnet/core/tutorials/web-api-help-pages-using-swagger?view=aspnetcore-5.0
 
+Swashbuckle (Anotaciones)
+https://github.com/domaindrivendev/Swashbuckle.AspNetCore/blob/master/README.md
+
 Web API analyzers
 https://docs.microsoft.com/en-us/aspnet/core/web-api/advanced/analyzers?view=aspnetcore-5.0&tabs=visual-studio
 
 Para probar
 https://localhost:44374/swagger/v1/swagger.json
 https://localhost:44374/swagger
+
+NSwag (Generar cliente)
+https://docs.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-nswag?view=aspnetcore-5.0&tabs=visual-studio

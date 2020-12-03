@@ -20,9 +20,8 @@ namespace WA81.Pages
         public async void OnGet()
         {
             var client = new swaggerClient("https://localhost:44374", new System.Net.Http.HttpClient());
-
+            
             var result = await client.SearchAsync("queso");
-
         }
     }
 }
