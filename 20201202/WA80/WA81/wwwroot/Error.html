@@ -1,0 +1,20 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+    <h1>ERROR</h1>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        let code = params.get('code');
+        console.log(code);
+
+        let body = document.querySelector('body');
+        let el = document.createElement('p');
+        el.innerHTML = code;
+        body.appendChild(el);
+    </script>
+</body>
+</html>
