@@ -28,3 +28,5 @@ https://localhost:44374/swagger
 
 NSwag (Generar cliente)
 https://docs.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-nswag?view=aspnetcore-5.0&tabs=visual-studio
+https://docs.microsoft.com/en-us/aspnet/core/web-api/microsoft.dotnet-openapi?view=aspnetcore-5.0
+dotnet openapi add file .\swagger.json --code-generator NSwagTypeScript
