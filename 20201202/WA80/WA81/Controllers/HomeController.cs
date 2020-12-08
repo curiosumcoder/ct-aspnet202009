@@ -23,8 +23,8 @@ namespace WA81.Controllers
         public IActionResult Index()
         {
             //throw new ApplicationException("Ocurrió un error!");
-            return NotFound();
-            //return View();
+            //return NotFound();
+            return View();
         }
 
         public IActionResult Privacy()
@@ -51,7 +51,7 @@ namespace WA81.Controllers
                 exceptionMessage += " desde la raíz.";
             }
 
-            return View("Error", new ErrorViewModel { RequestId = requestId });
+            return View("Error", new ErrorViewModel { RequestId = requestId, Message = exceptionMessage });
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
