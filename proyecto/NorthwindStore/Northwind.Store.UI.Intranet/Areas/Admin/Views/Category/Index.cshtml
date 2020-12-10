@@ -28,36 +28,14 @@
                 <thead>
                     <tr>
                         <th>
-                            @*@Html.DisplayNameFor(m => m.CategoryName)*@
-                            <div class="order-section">
-                                <span class="order-section-title">Name</span>
-                                <span class="btn-sort-asc">
-                                    <button data-sort="CategoryName" data-command="order" data-sortDir="asc" class="btn btn-link btn-sm btn-sort-asc">
-                                        <svg class="bi-asc" height="10" ></svg>
-                                    </button>
-                                </span>
-                                <span class="btn-sort-desc">ABC</span>
-                                @*<button data-sort="CategoryName" data-command="order" data-sortDir="asc" class="btn btn-link btn-sm btn-sort-asc">
-                                        <svg class="bi-asc" width="10" height="10"></svg>
-                                    </button>
-                                    <button data-sort="CategoryName" data-command="order" data-sortDir="desc" class="btn btn-link btn-sm btn-sort-desc">
-                                        <svg class="bi-desc" width="10" height="10"></svg>
-                                    </button>*@
-                            </div>
-                        </th>
-                        <th>
-                            @*@Html.DisplayNameFor(model => model.Description)*@
-                            Description
-                            <button data-sort="Description" data-command="order" data-sortDir="asc" class="btn btn-link btn-sm">
-                                <svg class="bi-asc" width="18" height="18"></svg>
-                            </button>
-                            <button data-sort="Description" data-command="order" data-sortDir="desc" class="btn btn-link btn-sm">
-                                <svg class="bi-desc" width="18" height="18"></svg>
+                            <button data-sort="CategoryName" data-command="order" data-sortdir="asc" class="btn btn-link">
+                                Name
                             </button>
                         </th>
                         <th>
-                            @*@Html.DisplayNameFor(model => model.Picture)*@
-                            Picture
+                            <button data-sort="Description" data-command="order" data-sortdir="asc" class="btn btn-link">
+                                Description
+                            </button>
                         </th>
                         <th></th>
                     </tr>
@@ -69,8 +47,7 @@
 </form>
 
 <script>
-    (function enableGrid(main, params, ajax = false, el = '', process = '') {
-
+    (function formActions(main, params, ajax = false, el = '', process = '') {
         function bindParams(main, params) {
             // Enlace del evento click para los diferentes parámetros
             params.forEach(p => {
@@ -162,58 +139,19 @@
         // Personalizar indicador de progreso
         // Agregar animación en la presentación de resultados
     })('#form1', ['command', 'page', 'sort', 'sortdir'], true, '#result', '#processing');
+
+    let sortButtons = document.querySelectorAll('button[data-sortdir]');
+    sortButtons.forEach(b => {
+        b.addEventListener('click', function(event) {
+            let value = this.dataset['sortdir'];
+            console.log(value);
+            this.dataset['sortdir'] = value === 'asc' ? 'desc' : 'asc';
+        });
+    });
 </script>
 
 <style>
     .processing:before {
         content: attr(data-message);
-    }
-
-    .bi-asc {
-        display: inline-block;
-        content: "";
-        background-image: url('data:image/svg+xml;charset=utf-8,<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M7.247 4.86l-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/> </svg>');
-        background-repeat: no-repeat;
-    }
-
-    .bi-desc {
-        display: inline-block;
-        content: "";
-        background-image: url('data:image/svg+xml;charset=utf-8,<svg width="1em" height="1em" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/> </svg>');
-        background-repeat: no-repeat;
-        background-size: 1rem 1rem;
-    }
-
-    .sortdir-asc svg, .sortdir-desc svg {
-        border: 1px solid gray;
-        border-radius: 2px;
-    }
-
-    /*[data-sortDir]:not(.sortdir-asc) {
-        opacity: 0.4;
-    }*/
-
-    .order-section {
-        display: grid;
-        grid-template-columns: auto 0.25fr;
-        grid-template-rows: auto auto;
-    }
-
-    .order-section-title {
-        grid-row-start: 1;
-        background-color: red;
-        grid-row-end: span 2;
-    }
-
-    .btn-sort-asc {
-        grid-column-start: 2;
-        grid-row-start: 1;
-        background-color: green;
-    }
-
-    .btn-sort-desc {
-        grid-column-start: 2;
-        grid-row-start: 2;
-        background-color: blue;
     }
 </style>
