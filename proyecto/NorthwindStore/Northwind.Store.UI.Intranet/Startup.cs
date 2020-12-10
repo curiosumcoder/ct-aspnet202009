@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Northwind.Store.Data;
 using Northwind.Store.Model;
+using Microsoft.Extensions.Logging;
 
 namespace Northwind.Store.UI.Intranet
 {
@@ -30,7 +31,15 @@ namespace Northwind.Store.UI.Intranet
         public void ConfigureServices(IServiceCollection services)
         {
             //services.AddDbContext<NWContext>(options => options.UseSqlServer(Configuration.GetConnectionString("NW")));
-            services.AddDbContextPool<NWContext>(options => options.UseSqlServer(Configuration.GetConnectionString("NW"))); // 128
+            services.AddDbContextPool<NWContext>(options =>
+            {
+                options.UseLoggerFactory(LoggerFactory.Create(builder =>
+                {
+                    builder.AddConsole(); 
+                    builder.AddDebug();
+                }));
+                options.UseSqlServer(Configuration.GetConnectionString("NW"));
+            }); // 128
 
             //services.AddDbContext<ApplicationDbContext>(options =>
             //    options.UseSqlServer(
@@ -64,6 +73,11 @@ namespace Northwind.Store.UI.Intranet
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            //app.UseStatusCodePagesWithRedirects("/Home/ErrorWithCode?code={0}");
+            //app.UseStatusCodePagesWithRedirects("/Error.html?code={0}");
+            app.UseStatusCodePagesWithReExecute("/Home/ErrorWithCode", "?code={0}");
+
             //app.UseHttpsRedirection();
             app.UseStaticFiles();
 
