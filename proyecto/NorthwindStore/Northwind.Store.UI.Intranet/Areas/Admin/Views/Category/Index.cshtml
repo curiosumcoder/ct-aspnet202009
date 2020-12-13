@@ -28,12 +28,12 @@
                 <thead>
                     <tr>
                         <th>
-                            <button data-sort="CategoryName" data-command="order" data-sortdir="asc" class="btn btn-link">
+                            <button data-sort="CategoryName" data-command="order" class="btn btn-link">
                                 Name
                             </button>
                         </th>
                         <th>
-                            <button data-sort="Description" data-command="order" data-sortdir="asc" class="btn btn-link">
+                            <button data-sort="Description" data-command="order" class="btn btn-link">
                                 Description
                             </button>
                         </th>
@@ -47,111 +47,107 @@
 </form>
 
 <script>
-    (function formActions(main, params, ajax = false, el = '', process = '') {
-        function bindParams(main, params) {
-            // Enlace del evento click para los diferentes parámetros
-            params.forEach(p => {
-                //console.log(p);
-
-                let actions = document.querySelectorAll(`${main} [data-${p}]`);
-                //console.log(actions);
-
-                actions.forEach(a => {
-                    a.addEventListener('click', function (event) {
-                        //event.preventDefault();
-
-                        let value = this.dataset[p];
-                        //console.log(value);
-
-                        // Limpiar las clases en las acciones existentes
-                        let newClass = `${p}-${value}`;
-                        let currentActions = document.querySelectorAll(`[class*=${p}]`);
-                        currentActions.forEach(a => {
-                            a.classList.forEach(c => {
-                                if (c.startsWith(p)) {
-                                    a.classList.remove(c);
-                                }
-                            });
-                        });
-                        this.classList.add(newClass); // Agregar la clase al elemento
-
-                        let input = document.querySelector(`${main} input[id=${p}]`);
-                        //console.log(input);
-
-                        input.value = value;
-                    });
-                });
-            });
-        }
-
-        bindParams(main, params); // Enlazar los parámetros de la interfaz
-
-        let form = document.querySelector(main);
-        form.setAttribute('method', ajax ? 'post' : 'get');
-
-        // Hacer el envio con AJAX
-        if (ajax && el.length > 0) {
-            form.addEventListener('submit', async (event) => {
-                event.preventDefault();
-
-                // Determinar la porción a actualizar
-                const nodes = document.querySelectorAll(`${main} ${el}`);
-                //console.log(nodes);
-
-                if (nodes.length > 0) {
-                    let processElement = document.querySelector(`${process}`);
-                    processElement.classList.add('processing'); // Indicador de procesamiento
-
-                    // Determinar el elemento después de donde actualizar
-                    const previo = nodes[0].previousElementSibling;
-                    //console.log(previo);
-
-                    let fd = new FormData(form);
-
-                    //console.log('submit');
-                    //console.log(fd);
-
-                    const response = await fetch(window.location.href, { method: 'post', headers: { 'X-Requested-With': 'fetch' }, body: fd });
-                    //console.log(response);
-
-                    if (response.ok) {
-                        let text = await response.text();
-                        //console.log(text);
-
-                        // Eliminar los elementos actuales
-                        nodes.forEach(n => n.remove());
-
-                        // Se coloca el resultado tomando como base el elemento previo
-                        previo.insertAdjacentHTML('afterend', text);
-
-                        bindParams(main, params); // Enlazar los parámetros de la interfaz
-
-                        processElement.classList.remove('processing'); // Indicador de procesamiento
-                    }
+    // Personalización para la dirección de ordenamiento
+    let sortButtons = document.querySelectorAll('[data-sort]');
+    sortButtons.forEach(sb => {
+        sb.addEventListener('click', function (event) {
+            // Se inicializa el ordenamiento del resto de columnas
+            sortButtons.forEach(sb2 => {
+                if (sb == sb2) {
+                    // Determinar el orden de la columna
+                    sb2.dataset.sortdir = sb2.dataset.sortdir === 'asc' ? 'desc' : 'asc';
+                }
+                else {
+                    sb2.dataset.sortdir = '';
                 }
             });
-        }
-
-        // TODO
-        // Iconos para ordenamiento
-        // Normalizar nombres de parámetros
-        // Deshabilitar interacción
-        // Personalizar indicador de progreso
-        // Agregar animación en la presentación de resultados
-    })('#form1', ['command', 'page', 'sort', 'sortdir'], true, '#result', '#processing');
-
-    let sortButtons = document.querySelectorAll('button[data-sortdir]');
-    sortButtons.forEach(b => {
-        b.addEventListener('click', function(event) {
-            let value = this.dataset['sortdir'];
-            console.log(value);
-            this.dataset['sortdir'] = value === 'asc' ? 'desc' : 'asc';
+            console.log(sb);
         });
     });
+
+    (function formActions(main, params, ajax = false, el = '', process = '') {
+        if (document.querySelector(main)) {
+            function bindParams(main, params) {
+                // Enlace del evento click para los diferentes parámetros
+                params.forEach(p => {
+                    let actions = document.querySelectorAll(`${main} [data-${p}]`);
+
+                    actions.forEach(a => {
+                        a.addEventListener('click', function (event) {
+                            //event.preventDefault();
+                            let value = this.dataset[p].toLowerCase();
+
+                            // Actualizar el valor
+                            let input = document.querySelector(`${main} input[id=${p}]`);
+                            input.value = value;
+                        });
+                    });
+                });
+            }
+
+            bindParams(main, params); // Enlazar los parámetros de la interfaz
+
+            let form = document.querySelector(main);
+            form.setAttribute('method', ajax ? 'post' : 'get');
+
+            // Hacer el envio con AJAX
+            if (ajax && el.length > 0) {
+                form.addEventListener('submit', async (event) => {
+                    event.preventDefault();
+
+                    // Determinar la porción a actualizar
+                    const nodes = document.querySelectorAll(`${main} ${el}`);
+
+                    if (nodes.length > 0) {
+                        let processElement = document.querySelector(`${process}`);
+                        processElement.classList.add('processing'); // Indicador de procesamiento
+
+                        // Determinar el elemento después de donde actualizar
+                        const previo = nodes[0].previousElementSibling;
+                        let fd = new FormData(form);
+                        const response = await fetch(window.location.href, { method: 'post', headers: { 'X-Requested-With': 'fetch' }, body: fd });
+
+                        if (response.ok) {
+                            let text = await response.text();
+
+                            // Eliminar los elementos actuales
+                            nodes.forEach(n => n.remove());
+
+                            // Se coloca el resultado tomando como base el elemento previo
+                            previo.insertAdjacentHTML('afterend', text);
+                            bindParams(main, params); // Enlazar los parámetros de la interfaz
+
+                            processElement.classList.remove('processing'); // Indicador de procesamiento
+                        }
+                    }
+                });
+            }
+
+            // TODO
+            // Deshabilitar interacción
+            // Personalizar indicador de progreso
+        }
+    })('#form1', ['command', 'page', 'sort', 'sortdir'], false, '#result', '#processing');
 </script>
 
 <style>
     .processing:before {
         content: attr(data-message);
+    }
+
+    [data-sortdir='asc']:after {
+        content: "↑";
+        color: black;
+        font-weight: bold;
+        font-size: large;
+        margin-left: 0.25em;
+    }
+
+    [data-sortdir='desc']:after {
+        content: "↓";
+        color: black;
+        font-weight: bold;
+        font-size: large;
+        margin-left: 0.25em;
     }
 </style>
