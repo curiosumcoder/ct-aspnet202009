@@ -22,7 +22,7 @@
             <ul class="pagination">
                 @for (int i = 1; i <= Model.Paging.PageCount; i++)
                 {
-                    <li class="page-item"><button class="page-link" data-page="@i" data-command="paging">@i</button></li>
+                    <li class="page-item @(i == Model.Paging.Page ? "active" : "")"><button class="page-link" data-page="@i" data-command="paging">@i</button></li>
                 }
             </ul>
         </td>

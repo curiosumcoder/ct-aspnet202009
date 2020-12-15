@@ -12,7 +12,7 @@
 </p>
 
 <div class="spinner1" style="display: none">
-    <svg width="64" height="64" >
+    <svg width="64" height="64">
         <use xlink:href="/lib/bootstrap-icons/bootstrap-icons.svg#arrow-repeat" />
     </svg>
 </div>
@@ -34,7 +34,7 @@
                 </div>
             </div>
             <div class="col-auto">
-                <button data-command="search" data-page="1" class="btn btn-primary">Search</button>
+                <button data-command="search" data-page="1" data-sort="CategoryName" data-sortdir="asc" class="btn btn-primary">Search</button>
             </div>
             <span id="processing" data-message="Procesando espere ..."></span>
         </div>
@@ -64,7 +64,7 @@
 
 <script>
     // Personalización para la dirección de ordenamiento
-    let sortButtons = document.querySelectorAll('[data-sort]');
+    let sortButtons = document.querySelectorAll('table [data-sort]');
     sortButtons.forEach(sb => {
         sb.addEventListener('click', function (event) {
             // Se inicializa el ordenamiento del resto de columnas
@@ -80,12 +80,20 @@
         });
     });
 
-    (function formCommands(main, params, ajax = false, target = '', process = '', overlay = '') {
-        if (document.querySelector(main) && params) {
-            function bindParams(main, params) {
+    // Limpiar el tipo de orden
+    function sortReset() {
+        let sortButtons = document.querySelectorAll('[data-sort]');
+        sortButtons.forEach(sb => sb.dataset.sortdir = '');
+    }
+
+    // Reset de página, columna, y orden de columna
+
+    (function formCommands(formId, params, target = '', process = '', ajax = false) {
+        if (document.querySelector(formId) && params) {
+            function bindParams(formId, params) {
                 // Enlace del evento click para los diferentes parámetros
                 params.forEach(p => {
-                    let actions = document.querySelectorAll(`${main} [data-${p}]`);
+                    let actions = document.querySelectorAll(`${formId} [data-${p}]`);
 
                     actions.forEach(a => {
                         a.addEventListener('click', function (event) {
@@ -93,16 +101,16 @@
                             let value = this.dataset[p].toLowerCase();
 
                             // Actualizar el valor
-                            let input = document.querySelector(`${main} input[id=${p}]`);
+                            let input = document.querySelector(`${formId} input[id=${p}]`);
                             input.value = value;
                         });
                     });
                 });
             }
 
-            bindParams(main, params); // Enlazar los parámetros de la interfaz
+            bindParams(formId, params); // Enlazar los parámetros de la interfaz
 
-            let form = document.querySelector(main);
+            let form = document.querySelector(formId);
             form.setAttribute('method', ajax ? 'post' : 'get');
 
             // Hacer el envio con AJAX
@@ -111,18 +119,13 @@
                     event.preventDefault();
 
                     // Determinar la porción a actualizar
-                    const nodes = document.querySelectorAll(`${main} ${target}`);
+                    const nodes = document.querySelectorAll(`${formId} ${target}`);
 
                     if (nodes.length > 0) {
-                        let processElement = null, overlayElement = null;
+                        let processElement = null;
                         if (process) {
-                            processElement = document.querySelector(`${process}`);
-                            processElement.classList.add('processing'); // Indicador de procesamiento
-                        }
-
-                        if (overlay) {
-                            overlayElement = document.querySelector(`${overlay}`);
-                            overlayElement.classList.add('overlay'); // Indicador de overlay
+                            processElement = document.querySelector(`#${process}`);
+                            processElement.classList.add(process); // Indicador de procesamiento
                         }
 
                         // Determinar el elemento después de donde actualizar
@@ -138,20 +141,19 @@
 
                             // Se coloca el resultado tomando como base el elemento previo
                             previo.insertAdjacentHTML('afterend', text);
-                            bindParams(main, params); // Enlazar los parámetros de la interfaz
+                            bindParams(formId, params); // Enlazar los parámetros de la interfaz
 
-                            processElement?.classList.remove('processing'); // Indicador de procesamiento
-                            overlayElement?.classList.remove('overlay'); // Indicador de overlay
+                            processElement?.classList.remove(process); // Indicador de procesamiento
                         }
                     }
                 });
             }
 
             // TODO
+            // Interacción de los elementos del formulario
             // Confirmar comportamiento no AJAX
-            // Agregar animación del resultado
         }
-    })('#form1', ['command', 'page', 'sort', 'sortdir'], true, '#result', '#processing');
+    })('#form1', ['command', 'page', 'sort', 'sortdir'], '#result', 'processing', true);
 </script>
 
 <style>
@@ -159,7 +161,7 @@
         content: attr(data-message);
     }
 
-    [data-sortdir='asc']:after {
+    table [data-sortdir='asc']:after {
         content: "↑";
         color: black;
         font-weight: bold;
@@ -167,7 +169,7 @@
         margin-left: 0.25em;
     }
 
-    [data-sortdir='desc']:after {
+    table [data-sortdir='desc']:after {
         content: "↓";
         color: black;
         font-weight: bold;
@@ -183,7 +185,7 @@
         width: 100%;
         height: 100%;
         z-index: 10;
-        background-color: rgba(0,0,0,0.5); /*dim the background*/
+        background-color: rgba(0,0,0,0.5);
         pointer-events: none;
         user-select: none;
     }
