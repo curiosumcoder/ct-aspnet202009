@@ -39,11 +39,10 @@ namespace Northwind.Store.UI.Internet
                 Configuration.GetConnectionString("NW")));
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                  .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddControllersWithViews();
             services.AddRazorPages();
-            //services.AddTransient(typeof(ServiceProvider));
 
             // Custom
             // https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity-configuration?view=aspnetcore-5.0
