@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Northwind.Store.UI.Internet.Models;
 using System;
@@ -32,6 +34,39 @@ namespace Northwind.Store.UI.Internet.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        /// <summary>
+        /// Crear roles y asignarle usuario
+        /// </summary>
+        /// <param name="serviceProvider"></param>
+        /// <returns></returns>
+        public async Task<IActionResult> CreateRoles(IServiceProvider serviceProvider)
+        {
+            //initializing custom roles 
+            var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var UserManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            string[] roleNames = { "Admin", "Manager", "Member" };
+            IdentityResult roleResult;
+
+            foreach (var roleName in roleNames)
+            {
+                var roleExist = await RoleManager.RoleExistsAsync(roleName);
+                if (!roleExist)
+                {
+                    //create the roles and seed them to the database: Question 1
+                    roleResult = await RoleManager.CreateAsync(new IdentityRole(roleName));
+                }
+            }
+
+            var _user = await UserManager.FindByEmailAsync("gbermude@outlook.com");
+
+            if (_user != null)
+            {
+                await UserManager.AddToRoleAsync(_user, "Admin");
+            }
+
+            return View("Index");
         }
     }
 }

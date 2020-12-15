@@ -15,6 +15,7 @@ using System.Security.Cryptography;
 
 namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
 {
+    //[AllowAnonymous]
     [Authorize]
     [Area("Admin")]
     public class CategoryController : Controller

@@ -9,7 +9,7 @@
 
 <button id="bTest">TEST</button>
 <input id="filter" type="search"/>
-<span id="target"></span>
+<span id="target" style="color: red; font-size: large;"></span>
 
 <script>
     @{
@@ -36,7 +36,7 @@
                 });                
             }
             else if (response.status === 401) {
-                target.innerText = "No autorizado";
+                target.innerText = `No autorizado ${new Date()}`;
                 //window.location.replace('/Identity/Account/Login');
             }
         });

@@ -75,6 +75,8 @@ namespace Northwind.Store.UI.Intranet.Areas.Identity.Pages.Account
         {
             returnUrl = returnUrl ?? Url.Content("~/");
 
+            var isLocal = Url.IsLocalUrl(returnUrl);
+
             if (ModelState.IsValid)
             {
                 // This doesn't count login failures towards account lockout

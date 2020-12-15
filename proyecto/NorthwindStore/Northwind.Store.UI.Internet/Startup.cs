@@ -43,6 +43,7 @@ namespace Northwind.Store.UI.Internet
 
             services.AddControllersWithViews();
             services.AddRazorPages();
+            //services.AddTransient(typeof(ServiceProvider));
 
             // Custom
             // https://docs.microsoft.com/en-us/aspnet/core/security/authentication/identity-configuration?view=aspnetcore-5.0

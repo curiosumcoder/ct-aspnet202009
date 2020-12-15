@@ -11,7 +11,7 @@ using Northwind.Store.Model;
 
 namespace Northwind.Store.UI.Internet.Controllers.API
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductController : ControllerBase
