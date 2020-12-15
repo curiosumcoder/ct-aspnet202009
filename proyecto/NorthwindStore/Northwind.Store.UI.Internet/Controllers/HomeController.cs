@@ -14,10 +14,14 @@ namespace Northwind.Store.UI.Internet.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly RoleManager<IdentityRole> _rm;
+        private readonly UserManager<IdentityUser> _um;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, RoleManager<IdentityRole> rm, UserManager<IdentityUser> um)
         {
             _logger = logger;
+            _rm = rm;
+            _um = um;
         }
 
         public IActionResult Index()
@@ -41,29 +45,26 @@ namespace Northwind.Store.UI.Internet.Controllers
         /// </summary>
         /// <param name="serviceProvider"></param>
         /// <returns></returns>
-        public async Task<IActionResult> CreateRoles(IServiceProvider serviceProvider)
+        public async Task<IActionResult> CreateRoles()
         {
-            //initializing custom roles 
-            var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            var UserManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
             string[] roleNames = { "Admin", "Manager", "Member" };
             IdentityResult roleResult;
 
             foreach (var roleName in roleNames)
             {
-                var roleExist = await RoleManager.RoleExistsAsync(roleName);
+                var roleExist = await _rm.RoleExistsAsync(roleName);
                 if (!roleExist)
                 {
                     //create the roles and seed them to the database: Question 1
-                    roleResult = await RoleManager.CreateAsync(new IdentityRole(roleName));
+                    roleResult = await _rm.CreateAsync(new IdentityRole(roleName));
                 }
             }
 
-            var _user = await UserManager.FindByEmailAsync("gbermude@outlook.com");
+            var user = await _um.FindByEmailAsync("gbermude@outlook.com");
 
-            if (_user != null)
+            if (user != null)
             {
-                await UserManager.AddToRoleAsync(_user, "Admin");
+                await _um.AddToRoleAsync(user, "Admin");
             }
 
             return View("Index");

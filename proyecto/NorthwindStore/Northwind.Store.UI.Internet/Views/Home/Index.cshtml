@@ -36,6 +36,10 @@
                 });                
             }
             else if (response.status === 401) {
+                target.innerText = `No autenticado ${new Date()}`;
+                //window.location.replace('/Identity/Account/Login');
+            }
+            else if (response.status === 403) {
                 target.innerText = `No autorizado ${new Date()}`;
                 //window.location.replace('/Identity/Account/Login');
             }

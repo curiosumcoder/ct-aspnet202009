@@ -39,7 +39,8 @@ namespace Northwind.Store.UI.Internet
                 Configuration.GetConnectionString("NW")));
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                  .AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddControllersWithViews();
             services.AddRazorPages();
@@ -56,6 +57,19 @@ namespace Northwind.Store.UI.Internet
                             ctx.Response.StatusCode == (int)HttpStatusCode.OK)
                         {
                             ctx.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                        }
+                        else
+                        {
+                            ctx.Response.Redirect(ctx.RedirectUri);
+                        }
+                        return Task.FromResult(0);
+                    },
+                    OnRedirectToAccessDenied = ctx =>
+                    {
+                        if (ctx.Request.Path.StartsWithSegments("/api") &&
+                            ctx.Response.StatusCode == (int)HttpStatusCode.OK)
+                        {
+                            ctx.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                         }
                         else
                         {
