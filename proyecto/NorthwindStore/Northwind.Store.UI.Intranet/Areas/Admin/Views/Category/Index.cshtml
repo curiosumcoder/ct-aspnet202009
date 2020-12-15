@@ -11,19 +11,35 @@
     <a asp-action="Create">Create New</a>
 </p>
 
-<div id="processing" data-message="Procesando espere ..."></div>
-
+<div class="spinner1" style="display: none">
+    <svg width="64" height="64" >
+        <use xlink:href="/lib/bootstrap-icons/bootstrap-icons.svg#arrow-repeat" />
+    </svg>
+</div>
+<div id="overlay"></div>
 <form id="form1" asp-antiforgery="false">
+    <input id="command" asp-for="Command" type="hidden" />
+    <input id="page" asp-for="Paging.Page" type="hidden" />
+    <input id="sort" asp-for="Paging.Sort" type="hidden" />
+    <input id="sortdir" asp-for="Paging.SortDir" type="hidden" />
+
     <div class="d-flex flex-column">
-        <div>
-            <input id="command" asp-for="Command" type="hidden" />
-            <input asp-for="Filter.CategoryName" placeholder="Search here ..." />
-            <input id="page" asp-for="Paging.Page" type="hidden" />
-            <input id="sort" asp-for="Paging.Sort" type="hidden" />
-            <input id="sortdir" asp-for="Paging.SortDir" type="hidden" />
-            <button data-command="search" data-page="1">Search</button>
+        <div class="form-row">
+            <div class="col-8">
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">🔍</div>
+                    </div>
+                    <input asp-for="Filter.CategoryName" placeholder="Search here ..." class="form-control" />
+                </div>
+            </div>
+            <div class="col-auto">
+                <button data-command="search" data-page="1" class="btn btn-primary">Search</button>
+            </div>
+            <span id="processing" data-message="Procesando espere ..."></span>
         </div>
         <div>
+            <br />
             <table class="table">
                 <thead>
                     <tr>
@@ -61,12 +77,11 @@
                     sb2.dataset.sortdir = '';
                 }
             });
-            console.log(sb);
         });
     });
 
-    (function formActions(main, params, ajax = false, el = '', process = '') {
-        if (document.querySelector(main)) {
+    (function formCommands(main, params, ajax = false, target = '', process = '', overlay = '') {
+        if (document.querySelector(main) && params) {
             function bindParams(main, params) {
                 // Enlace del evento click para los diferentes parámetros
                 params.forEach(p => {
@@ -91,16 +106,24 @@
             form.setAttribute('method', ajax ? 'post' : 'get');
 
             // Hacer el envio con AJAX
-            if (ajax && el.length > 0) {
+            if (ajax && target.length > 0) {
                 form.addEventListener('submit', async (event) => {
                     event.preventDefault();
 
                     // Determinar la porción a actualizar
-                    const nodes = document.querySelectorAll(`${main} ${el}`);
+                    const nodes = document.querySelectorAll(`${main} ${target}`);
 
                     if (nodes.length > 0) {
-                        let processElement = document.querySelector(`${process}`);
-                        processElement.classList.add('processing'); // Indicador de procesamiento
+                        let processElement = null, overlayElement = null;
+                        if (process) {
+                            processElement = document.querySelector(`${process}`);
+                            processElement.classList.add('processing'); // Indicador de procesamiento
+                        }
+
+                        if (overlay) {
+                            overlayElement = document.querySelector(`${overlay}`);
+                            overlayElement.classList.add('overlay'); // Indicador de overlay
+                        }
 
                         // Determinar el elemento después de donde actualizar
                         const previo = nodes[0].previousElementSibling;
@@ -117,16 +140,16 @@
                             previo.insertAdjacentHTML('afterend', text);
                             bindParams(main, params); // Enlazar los parámetros de la interfaz
 
-                            processElement.classList.remove('processing'); // Indicador de procesamiento
+                            processElement?.classList.remove('processing'); // Indicador de procesamiento
+                            overlayElement?.classList.remove('overlay'); // Indicador de overlay
                         }
                     }
                 });
             }
 
             // TODO
-            // Deshabilitar interacción
-            // Personalizar indicador de progreso
             // Confirmar comportamiento no AJAX
+            // Agregar animación del resultado
         }
     })('#form1', ['command', 'page', 'sort', 'sortdir'], true, '#result', '#processing');
 </script>
@@ -150,5 +173,53 @@
         font-weight: bold;
         font-size: large;
         margin-left: 0.25em;
+    }
+
+    /* Overlay */
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 10;
+        background-color: rgba(0,0,0,0.5); /*dim the background*/
+        pointer-events: none;
+        user-select: none;
+    }
+
+    /* Animación de tabla */
+    @@keyframes show-row {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    tbody {
+        animation: show-row 1s forwards;
+    }
+
+    /* Spinner */
+    .spinner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        color: gray;
+        z-index: 10;
+        animation: spin 2000ms infinite linear;
+    }
+
+    @@keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(359deg);
+        }
     }
 </style>
