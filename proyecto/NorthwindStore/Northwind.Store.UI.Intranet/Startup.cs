@@ -15,6 +15,9 @@ using Microsoft.Extensions.Hosting;
 using Northwind.Store.Data;
 using Northwind.Store.Model;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using Northwind.Store.UI.Intranet.Authorization;
 
 namespace Northwind.Store.UI.Intranet
 {
@@ -48,15 +51,42 @@ namespace Northwind.Store.UI.Intranet
                 Configuration.GetConnectionString("NW")));
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddControllersWithViews();
+
+            #region Requerir autenticación para todo el sitio
+            // Requerir autenticación para todo el sitio, se exceptúa
+            // el uso específico de Authorize o Allowanonymous
+            //services.AddControllersWithViews(config =>
+            //{
+            //    var policy = new AuthorizationPolicyBuilder()
+            //                     .RequireAuthenticatedUser()
+            //                     .Build();
+            //    config.Filters.Add(new AuthorizeFilter(policy));
+            //});
+
+            // Requerir autenticación para todo el sitio, se exceptúa
+            // el uso específico de Authorize o AllowAnonymous. RECOMENDADO    
+            //services.AddAuthorization(options =>
+            //{
+            //    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+            //        .RequireAuthenticatedUser()
+            //        .Build();
+            //});
+            #endregion
+
             services.AddRazorPages();
 
             services.AddTransient<IRepository<Category, int>, BaseRepository<Category, int>>();
             services.AddTransient<IRepository<Category, int>, CategoryRepository>();
             services.AddTransient(typeof(CategoryRepository));
             services.AddTransient(typeof(CategoryD));
+
+            // AuthorizationHandler
+            services.AddSingleton<IAuthorizationHandler, AdministratorAuthorizationHandler>();
+            services.AddSingleton<IAuthorizationHandler, ManagerAuthorizationHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

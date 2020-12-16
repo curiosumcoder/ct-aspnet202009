@@ -1,12 +1,12 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog.Web;
+using Northwind.Store.UI.Intranet.Data;
+using Northwind.Store.UI.Web.Data;
 
 namespace Northwind.Store.UI.Intranet
 {
@@ -14,11 +14,35 @@ namespace Northwind.Store.UI.Intranet
     {
         public static void Main(string[] args)
         {
-            var logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+            var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
             try
             {
                 logger.Debug("init main");
-                CreateHostBuilder(args).Build().Run();
+                //CreateHostBuilder(args).Build().Run();
+                var host = CreateHostBuilder(args).Build();
+
+                using (var scope = host.Services.CreateScope())
+                {
+                    var services = scope.ServiceProvider;
+                    var hostingEnvironment = services.GetService<IWebHostEnvironment>();
+
+                    if (!hostingEnvironment.IsProduction())
+                    {
+                        try
+                        {
+                            var context = services.GetRequiredService<ApplicationDbContext>();
+                            context.Database.Migrate();
+
+                            SeedData.Initialize(services).Wait();
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.Error(ex, "An error occurred seeding the DB.");
+                        }
+                    }
+                }
+
+                host.Run();
             }
             catch (Exception exception)
             {

@@ -9,9 +9,9 @@ using Microsoft.EntityFrameworkCore;
 using Northwind.Store.Data;
 using Northwind.Store.Model;
 using Northwind.Store.Notification;
+using Northwind.Store.UI.Intranet.Authorization;
 using Northwind.Store.UI.Intranet.Extensions;
 using Northwind.Store.UI.Web.Settings;
-using System.Security.Cryptography;
 
 namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
 {
@@ -27,8 +27,9 @@ namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
         private readonly CategoryRepository _cR2;
         private readonly CategoryD _cD;
         private readonly RequestSettings rs;
+        private readonly IAuthorizationService _authorizationService;
 
-        public CategoryController(NWContext context, IRepository<Category, int> cR, CategoryRepository cR2, CategoryD cD)
+        public CategoryController(NWContext context, IRepository<Category, int> cR, CategoryRepository cR2, CategoryD cD, IAuthorizationService authorizationService)
         {
             _context = context;
             _cR = cR;
@@ -37,6 +38,8 @@ namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
             _cD = cD;
 
             rs = new RequestSettings(this);
+
+            _authorizationService = authorizationService;
         }
 
         //public IActionResult Index0()
@@ -49,6 +52,14 @@ namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
         //public IActionResult Index(ViewModels.CategoryIndexViewModel vm)
         public async Task<IActionResult> Index(ViewModels.CategoryIndexViewModel vm)
         {
+            //var isAuthorized0 = User.IsInRole(Constants.ManagersRole);
+
+            //var isAuthorized = await _authorizationService.AuthorizeAsync(User, new Models.Person(), Operations.Approve);
+            //if (!isAuthorized.Succeeded)
+            //{
+            //    return Forbid();
+            //}
+
             await vm.HandleRequest(_cR2);
 
             if (Request.IsAjaxRequest())
