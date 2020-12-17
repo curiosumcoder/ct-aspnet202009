@@ -52,13 +52,14 @@ namespace Northwind.Store.UI.Intranet.Areas.Admin.Controllers
         //public IActionResult Index(ViewModels.CategoryIndexViewModel vm)
         public async Task<IActionResult> Index(ViewModels.CategoryIndexViewModel vm)
         {
-            //var isAuthorized0 = User.IsInRole(Constants.ManagersRole);
+            var isAuthorized0 = User.IsInRole(Constants.ManagersRole);
 
-            //var isAuthorized = await _authorizationService.AuthorizeAsync(User, new Models.Person(), Operations.Approve);
-            //if (!isAuthorized.Succeeded)
-            //{
-            //    return Forbid();
-            //}
+            var isAuthorized = await _authorizationService.AuthorizeAsync(User, new Models.Person(), Operations.Approve);
+
+            if (!isAuthorized.Succeeded)
+            {
+                return Forbid();
+            }
 
             await vm.HandleRequest(_cR2);
 

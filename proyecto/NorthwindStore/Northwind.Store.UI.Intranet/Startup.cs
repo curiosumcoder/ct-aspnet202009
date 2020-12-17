@@ -54,7 +54,7 @@ namespace Northwind.Store.UI.Intranet
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            services.AddControllersWithViews();
+            //services.AddControllersWithViews();
 
             #region Requerir autenticación para todo el sitio
             // Requerir autenticación para todo el sitio, se exceptúa
@@ -69,12 +69,12 @@ namespace Northwind.Store.UI.Intranet
 
             // Requerir autenticación para todo el sitio, se exceptúa
             // el uso específico de Authorize o AllowAnonymous. RECOMENDADO    
-            //services.AddAuthorization(options =>
-            //{
-            //    options.FallbackPolicy = new AuthorizationPolicyBuilder()
-            //        .RequireAuthenticatedUser()
-            //        .Build();
-            //});
+            services.AddAuthorization(options =>
+            {
+                options.FallbackPolicy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+            });
             #endregion
 
             services.AddRazorPages();

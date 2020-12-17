@@ -11,7 +11,7 @@ using Northwind.Store.UI.Intranet.Models;
 
 namespace Northwind.Store.UI.Intranet.Controllers
 {
-    //[AllowAnonymous]
+    [AllowAnonymous]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
