@@ -11,7 +11,7 @@ namespace WA90.Data
 
             //return new int[] { };
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 15; i++)
             {
                 yield return new Random().Next(1, 1000);
             }
