@@ -1,4 +1,4 @@
-# aspnet202009
+# ASP.NET Core MVC
 Material relacionado con el curso de ASP.NET Core MVC impartido en UCenfotec (modalidad virtual) en Setiembre 2020.
 
 ### Requerimientos de software
